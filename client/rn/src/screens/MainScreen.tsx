@@ -94,6 +94,9 @@ export default function MainScreen({
     setError('');
     setResult(null);
 
+    console.log('🎯 Starting content extraction from:', validUrl.href);
+    console.log('📡 Using backend:', settings.backendUrl);
+
     try {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
@@ -103,6 +106,7 @@ export default function MainScreen({
       if (isAuthenticated && user) {
         // Note: In real app, you'd get token from secure storage
         // For now, we'll handle this in the auth context
+        console.log('🔐 Making authenticated request for user:', user.username);
       }
 
       const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
@@ -116,13 +120,21 @@ export default function MainScreen({
       const data = await response.json();
 
       if (!response.ok) {
+        console.error('❌ Extraction failed:', response.status, data);
         throw new Error(data.error || 'Failed to extract content');
       }
+
+      console.log('✅ Content extraction successful:', {
+        title: data.title,
+        wordCount: data.wordCount,
+        hasWebDAV: !!data.webdav
+      });
 
       setResult(data);
       setUrl('');
       setTags('');
     } catch (err) {
+      console.error('❌ Extraction error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);

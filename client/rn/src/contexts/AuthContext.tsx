@@ -75,6 +75,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkAuth = async (backendUrl: string) => {
     if (!token) return;
 
+    console.log('🔐 Checking auth with backend:', backendUrl);
+
     try {
       const response = await fetch(`${backendUrl}/api/auth/me`, {
         headers: {
@@ -85,7 +87,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
+        console.log('✅ Auth check successful for user:', data.user.username);
       } else {
+        console.warn('⚠️ Auth check failed, logging out');
         await logout();
       }
     } catch (error) {

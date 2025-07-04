@@ -60,17 +60,22 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
 
     setLoading(true);
     setError('');
+    
+    console.log('🔍 Testing connection to:', backendUrl.trim());
 
     try {
       const response = await fetch(`${backendUrl.trim()}/api/health`);
       const data = await response.json();
       
       if (response.ok) {
+        console.log('✅ Connection test successful:', data);
         Alert.alert('Connection Successful', `Server is running: ${data.status}`);
       } else {
+        console.error('❌ Server returned error:', response.status, data);
         throw new Error('Server returned error');
       }
     } catch (err) {
+      console.error('❌ Connection test failed:', err);
       Alert.alert('Connection Failed', 'Could not connect to backend server');
     } finally {
       setLoading(false);

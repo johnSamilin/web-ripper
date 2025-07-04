@@ -65,6 +65,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       const updatedSettings = { ...settings, ...newSettings };
       setSettings(updatedSettings);
       await storage.setItem('web-ripper-settings', JSON.stringify(updatedSettings));
+      console.log('📱 Settings updated:', updatedSettings);
     } catch (error) {
       console.error('Failed to save settings:', error);
       throw error;

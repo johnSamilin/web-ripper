@@ -25,6 +25,11 @@
       },
       "package": "com.webritper.app",
       "buildType": "apk",
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_WIFI_STATE"
+      ],
       "intentFilters": [
         {
           "action": "android.intent.action.SEND",
