@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB RIPPER - Content Destroyer</title>
+    <meta name="description" content="Turn any webpage into a perfect archive in seconds. No more broken links, missing images, or cluttered ads.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="background-elements">
+        <div class="bg-element bg-element-1"></div>
+        <div class="bg-element bg-element-2"></div>
+        <div class="bg-element bg-element-3"></div>
+        <div class="bg-element bg-element-4"></div>
+        <div class="bg-element bg-element-5"></div>
+        <div class="bg-element bg-element-6"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <!-- Logo -->
+                <div class="logo">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v4"/>
+                        <path d="M12 18v4"/>
+                        <path d="M4.93 4.93l2.83 2.83"/>
+                        <path d="M16.24 16.24l2.83 2.83"/>
+                        <path d="M2 12h4"/>
+                        <path d="M18 12h4"/>
+                        <path d="M4.93 19.07l2.83-2.83"/>
+                        <path d="M16.24 7.76l2.83-2.83"/>
+                    </svg>
+                </div>
+
+                <!-- Main Headline -->
+                <h1 class="main-title">WEB RIPPER</h1>
+                <h2 class="subtitle">CONTENT DESTROYER</h2>
+
+                <!-- Value Proposition -->
+                <p class="value-prop">
+                    Turn any webpage into a <span class="highlight">perfect archive</span> in seconds.
+                </p>
+                
+                <p class="description">
+                    No more broken links, missing images, or cluttered ads. 
+                    Just clean, beautiful content that lasts forever.
+                </p>
+
+                <!-- CTA Buttons -->
+                <div class="cta-buttons">
+                    <button class="brutal-button brutal-button-primary" onclick="handleGetStarted()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/>
+                        </svg>
+                        START DESTROYING ADS
+                    </button>
+                    
+                    <button class="brutal-button brutal-button-secondary" onclick="scrollToSection('how-it-works')">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        SEE HOW IT WORKS
+                    </button>
+                </div>
+
+                <!-- Social Proof -->
+                <div class="social-proof">
+                    <div class="proof-item">
+                        <div class="proof-number">100%</div>
+                        <div class="proof-label">Ad-Free</div>
+                    </div>
+                    <div class="proof-item">
+                        <div class="proof-number">∞</div>
+                        <div class="proof-label">Websites</div>
+                    </div>
+                    <div class="proof-item">
+                        <div class="proof-number">0</div>
+                        <div class="proof-label">Broken Links</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="container">
+            <div class="section-content">
+                <h2 class="section-title">TIRED OF THIS GARBAGE?</h2>
+                
+                <div class="problem-grid">
+                    <div class="problem-card">
+                        <div class="problem-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3,6 5,6 21,6"/>
+                                <path d="M19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"/>
+                                <line x1="10" y1="11" x2="10" y2="17"/>
+                                <line x1="14" y1="11" x2="14" y2="17"/>
+                            </svg>
+                        </div>
+                        <h3 class="problem-title">ADS EVERYWHERE</h3>
+                        <p class="problem-description">
+                            Popups, banners, and sponsored content destroying your reading experience.
+                        </p>
+                    </div>
+
+                    <div class="problem-card">
+                        <div class="problem-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M2 12h20"/>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                            </svg>
+                        </div>
+                        <h3 class="problem-title">BROKEN LINKS</h3>
+                        <p class="problem-description">
+                            Articles disappear, images break, and your saved bookmarks become useless.
+                        </p>
+                    </div>
+
+                    <div class="problem-card">
+                        <div class="problem-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="M21 21l-4.35-4.35"/>
+                            </svg>
+                        </div>
+                        <h3 class="problem-title">CAN'T FIND ANYTHING</h3>
+                        <p class="problem-description">
+                            Thousands of bookmarks with no organization, tags, or way to search.
+                        </p>
+                    </div>
+                </div>
+
+                <p class="problem-conclusion">
+                    WEB RIPPER DESTROYS ALL OF THIS NONSENSE
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-it-works-section">
+        <div class="container">
+            <div class="section-content">
+                <h2 class="section-title">HOW IT WORKS</h2>
+                <p class="section-subtitle">Three simple steps to perfect content archives</p>
+
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-header">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <circle cx="12" cy="12" r="4"/>
+                                    <path d="M12 2v4"/>
+                                    <path d="M12 18v4"/>
+                                    <path d="M4.93 4.93l2.83 2.83"/>
+                                    <path d="M16.24 16.24l2.83 2.83"/>
+                                    <path d="M2 12h4"/>
+                                    <path d="M18 12h4"/>
+                                    <path d="M4.93 19.07l2.83-2.83"/>
+                                    <path d="M16.24 7.76l2.83-2.83"/>
+                                </svg>
+                                <h3 class="step-title">PASTE ANY URL</h3>
+                            </div>
+                            <p class="step-description">Copy a link from any website - news articles, blog posts, tutorials, or research papers.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-header">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/>
+                                </svg>
+                                <h3 class="step-title">AI DOES THE WORK</h3>
+                            </div>
+                            <p class="step-description">Our system extracts clean content, removes ads, embeds images, and adds smart tags automatically.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-header">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22,4 12,14.01 9,11.01"/>
+                                </svg>
+                                <h3 class="step-title">PERFECT ARCHIVE CREATED</h3>
+                            </div>
+                            <p class="step-description">Get a beautiful, self-contained HTML file that works forever - no broken links or missing images.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="section-content">
+                <h2 class="section-title">BRUTAL FEATURES</h2>
+                <p class="section-subtitle">Everything you need to build the perfect content library</p>
+
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <circle cx="12" cy="12" r="4"/>
+                                <path d="M12 2v4"/>
+                                <path d="M12 18v4"/>
+                                <path d="M4.93 4.93l2.83 2.83"/>
+                                <path d="M16.24 16.24l2.83 2.83"/>
+                                <path d="M2 12h4"/>
+                                <path d="M18 12h4"/>
+                                <path d="M4.93 19.07l2.83-2.83"/>
+                                <path d="M16.24 7.76l2.83-2.83"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">CLEAN CONTENT EXTRACTION</h3>
+                        <p class="feature-description">Removes ads, popups, and clutter to give you pure, readable content from any website.</p>
+                        <div class="feature-benefit">Save time and focus on what matters</div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">CLOUD STORAGE INTEGRATION</h3>
+                        <p class="feature-description">Automatically saves articles to your WebDAV storage with smart organization and metadata.</p>
+                        <div class="feature-benefit">Access your library from anywhere</div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                                <line x1="7" y1="7" x2="7.01" y2="7"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">AI-POWERED TAGGING</h3>
+                        <p class="feature-description">Automatically categorizes and tags your articles using advanced AI for easy discovery.</p>
+                        <div class="feature-benefit">Find articles instantly with smart search</div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14,2 14,8 20,8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                <polyline points="10,9 9,9 8,9"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">SELF-CONTAINED ARCHIVES</h3>
+                        <p class="feature-description">Creates complete HTML files with embedded images - no broken links or missing content.</p>
+                        <div class="feature-benefit">Your articles stay perfect forever</div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">SOURCE ANALYSIS</h3>
+                        <p class="feature-description">Analyzes your reading habits and discovers RSS feeds and newsletters from your favorite sites.</p>
+                        <div class="feature-benefit">Never miss content from sources you love</div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                <line x1="8" y1="21" x2="16" y2="21"/>
+                                <line x1="12" y1="17" x2="12" y2="21"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">BULK IMPORT TOOLS</h3>
+                        <p class="feature-description">Import your entire Pocket library or reading lists with one click - no manual work required.</p>
+                        <div class="feature-benefit">Migrate your reading history effortlessly</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Benefits -->
+    <section class="technical-section">
+        <div class="container">
+            <div class="section-content">
+                <h2 class="section-title">TECHNICAL SUPERIORITY</h2>
+
+                <div class="benefits-grid">
+                    <div class="benefits-column">
+                        <div class="benefit-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22,4 12,14.01 9,11.01"/>
+                            </svg>
+                            <div>
+                                <h4 class="benefit-title">SELF-CONTAINED ARCHIVES</h4>
+                                <p class="benefit-description">Every image is embedded as base64 data. No external dependencies, no broken links.</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+                            </svg>
+                            <div>
+                                <h4 class="benefit-title">WEBDAV INTEGRATION</h4>
+                                <p class="benefit-description">Works with any WebDAV server. Your data stays under your control.</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/>
+                            </svg>
+                            <div>
+                                <h4 class="benefit-title">SMART CONTENT DETECTION</h4>
+                                <p class="benefit-description">Advanced algorithms identify main content and remove navigation, ads, and clutter.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="benefits-column">
+                        <div class="benefit-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 12l2 2 4-4"/>
+                                <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
+                                <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
+                                <path d="M3 12c0 5.5 4.5 10 10 10s10-4.5 10-10"/>
+                            </svg>
+                            <div>
+                                <h4 class="benefit-title">AI-POWERED TAGGING</h4>
+                                <p class="benefit-description">Automatic categorization and tagging using OpenAI for perfect organization.</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14,2 14,8 20,8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                <polyline points="10,9 9,9 8,9"/>
+                            </svg>
+                            <div>
+                                <h4 class="benefit-title">METADATA PRESERVATION</h4>
+                                <p class="benefit-description">Saves extraction date, source URL, word count, and custom tags for every article.</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-item">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            <div>
+                                <h4 class="benefit-title">ANONYMOUS MODE</h4>
+                                <p class="benefit-description">Works without registration. Create an account only when you want cloud features.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">STOP LOSING CONTENT</h2>
+                
+                <p class="cta-description">
+                    Start building your perfect content library today. 
+                    No ads, no broken links, no bullshit.
+                </p>
+
+                <div class="cta-buttons">
+                    <button class="brutal-button brutal-button-danger" onclick="handleGetStarted()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <circle cx="12" cy="12" r="4"/>
+                            <path d="M12 2v4"/>
+                            <path d="M12 18v4"/>
+                            <path d="M4.93 4.93l2.83 2.83"/>
+                            <path d="M16.24 16.24l2.83 2.83"/>
+                            <path d="M2 12h4"/>
+                            <path d="M18 12h4"/>
+                            <path d="M4.93 19.07l2.83-2.83"/>
+                            <path d="M16.24 7.76l2.83-2.83"/>
+                        </svg>
+                        DESTROY YOUR FIRST WEBPAGE
+                    </button>
+                </div>
+
+                <div class="final-proof">
+                    <p>✓ Free to use ✓ No registration required ✓ Works on any website</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function handleGetStarted() {
+            // Redirect to the app
+            window.location.href = '../client/rn/';
+        }
+
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+    </script>
+</body>
+</html>
