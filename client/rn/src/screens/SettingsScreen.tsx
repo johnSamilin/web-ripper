@@ -131,7 +131,7 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
               <BrutalInput
                 value={backendUrl}
                 onChangeText={setBackendUrl}
-                placeholder="http://localhost:3001"
+                placeholder="http://10.0.2.2:3001"
                 label="BACKEND URL"
                 keyboardType="url"
                 autoCapitalize="none"

@@ -31,7 +31,14 @@ app.use(helmet({
 }));
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: [
+    process.env.CORS_ORIGIN || 'http://localhost:5173',
+    'http://localhost:8081',  // Expo dev server
+    'http://localhost:19000', // Expo classic
+    'http://localhost:19006', // Expo web
+    'exp://localhost:19000',  // Expo app
+    'exp://192.168.1.100:19000', // Replace with your actual IP
+  ],
   credentials: true
 }));
 

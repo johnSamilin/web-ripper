@@ -14,7 +14,7 @@ interface SettingsContextType {
 }
 
 const defaultSettings: Settings = {
-  backendUrl: 'http://localhost:3001',
+  backendUrl: 'http://10.0.2.2:3001', // Android emulator localhost
   theme: 'brutal'
 };
 
