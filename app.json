@@ -1,0 +1,89 @@
+{
+  "expo": {
+    "name": "Web Ripper",
+    "slug": "web-ripper",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#f3f4f6"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.webritper.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#f3f4f6"
+      },
+      "package": "com.webritper.app",
+      "buildType": "apk",
+      "intentFilters": [
+        {
+          "action": "android.intent.action.SEND",
+          "category": [
+            "android.intent.category.DEFAULT"
+          ],
+          "data": {
+            "mimeType": "text/plain"
+          }
+        },
+        {
+          "action": "android.intent.action.VIEW",
+          "category": [
+            "android.intent.category.DEFAULT",
+            "android.intent.category.BROWSABLE"
+          ],
+          "data": {
+            "scheme": "https"
+          }
+        },
+        {
+          "action": "android.intent.action.VIEW",
+          "category": [
+            "android.intent.category.DEFAULT",
+            "android.intent.category.BROWSABLE"
+          ],
+          "data": {
+            "scheme": "http"
+          }
+        }
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "scheme": "webritper",
+    "build": {
+      "production": {
+        "android": {
+          "buildType": "apk"
+        }
+      },
+      "preview": {
+        "android": {
+          "buildType": "apk"
+        }
+      }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "dc19937f-cee4-4a44-91c5-cf13ed9e058f"
+      }
+    }
+  }
+}

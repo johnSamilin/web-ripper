@@ -1,0 +1,50 @@
+<svg width="76" height="76" viewBox="0 0 76 76" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="76" height="76" fill="#f3f4f6"/>
+  
+  <!-- Main icon container -->
+  <rect x="9.5" y="9.5" width="57" height="57" 
+        fill="#000000" stroke="#ef4444" stroke-width="1.1875"/>
+  
+  <!-- Inner content -->
+  <rect x="14.25" y="14.25" width="47.5" height="47.5" fill="#ffffff"/>
+  
+  <!-- Document/Web icon -->
+  <g transform="translate(38, 29.6875)">
+    <!-- Document outline -->
+    <rect x="-8.90625" y="-10.390625" width="17.8125" height="20.78125" 
+          fill="#000000" stroke="#ef4444" stroke-width="2"/>
+    <rect x="-7.421875" y="-8.90625" width="14.84375" height="17.8125" fill="#ffffff"/>
+    
+    <!-- Document lines -->
+    <rect x="-5.9375" y="-5.9375" width="11.875" height="0.59375" fill="#000000"/>
+    <rect x="-5.9375" y="-3.7109375" width="8.90625" height="0.59375" fill="#000000"/>
+    <rect x="-5.9375" y="-1.484375" width="10.390625" height="0.59375" fill="#000000"/>
+    <rect x="-5.9375" y="0.7421875" width="7.421875" height="0.59375" fill="#000000"/>
+    <rect x="-5.9375" y="2.96875" width="9.6484375" height="0.59375" fill="#000000"/>
+    
+    <!-- Web globe -->
+    <circle cx="0" cy="5.1953125" r="2.59765625" fill="#ef4444" stroke="#000000" stroke-width="1"/>
+    <circle cx="0" cy="5.1953125" r="1.85546875" fill="#ffffff"/>
+    
+    <!-- Globe lines -->
+    <ellipse cx="0" cy="5.1953125" rx="1.85546875" ry="1.11328125" 
+             fill="none" stroke="#ef4444" stroke-width="1"/>
+    <line x1="-1.85546875" y1="5.1953125" x2="1.85546875" y2="5.1953125" 
+          stroke="#ef4444" stroke-width="1"/>
+    <line x1="0" y1="3.33984375" x2="0" y2="7.05078125" 
+          stroke="#ef4444" stroke-width="1"/>
+  </g>
+  
+  
+  <!-- Decorative elements -->
+  <rect x="14.84375" y="14.84375" width="2.96875" height="2.96875" 
+        fill="#ef4444" transform="rotate(45 16.328125 16.328125)"/>
+  <rect x="58.1875" y="14.84375" width="2.96875" height="2.96875" 
+        fill="#facc15" transform="rotate(45 59.671875 16.328125)"/>
+  <rect x="14.84375" y="58.1875" width="2.96875" height="2.96875" 
+        fill="#22c55e" transform="rotate(45 16.328125 59.671875)"/>
+  <rect x="58.1875" y="58.1875" width="2.96875" height="2.96875" 
+        fill="#3b82f6" transform="rotate(45 59.671875 59.671875)"/>
+  
+</svg>

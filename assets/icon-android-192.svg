@@ -1,0 +1,50 @@
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="192" height="192" fill="#f3f4f6"/>
+  
+  <!-- Main icon container -->
+  <rect x="24" y="24" width="144" height="144" 
+        fill="#000000" stroke="#ef4444" stroke-width="3"/>
+  
+  <!-- Inner content -->
+  <rect x="36" y="36" width="120" height="120" fill="#ffffff"/>
+  
+  <!-- Document/Web icon -->
+  <g transform="translate(96, 75)">
+    <!-- Document outline -->
+    <rect x="-22.5" y="-26.25" width="45" height="52.5" 
+          fill="#000000" stroke="#ef4444" stroke-width="2"/>
+    <rect x="-18.75" y="-22.5" width="37.5" height="45" fill="#ffffff"/>
+    
+    <!-- Document lines -->
+    <rect x="-15" y="-15" width="30" height="1.5" fill="#000000"/>
+    <rect x="-15" y="-9.375" width="22.5" height="1.5" fill="#000000"/>
+    <rect x="-15" y="-3.75" width="26.25" height="1.5" fill="#000000"/>
+    <rect x="-15" y="1.875" width="18.75" height="1.5" fill="#000000"/>
+    <rect x="-15" y="7.5" width="24.375" height="1.5" fill="#000000"/>
+    
+    <!-- Web globe -->
+    <circle cx="0" cy="13.125" r="6.5625" fill="#ef4444" stroke="#000000" stroke-width="1"/>
+    <circle cx="0" cy="13.125" r="4.6875" fill="#ffffff"/>
+    
+    <!-- Globe lines -->
+    <ellipse cx="0" cy="13.125" rx="4.6875" ry="2.8125" 
+             fill="none" stroke="#ef4444" stroke-width="1"/>
+    <line x1="-4.6875" y1="13.125" x2="4.6875" y2="13.125" 
+          stroke="#ef4444" stroke-width="1"/>
+    <line x1="0" y1="8.4375" x2="0" y2="17.8125" 
+          stroke="#ef4444" stroke-width="1"/>
+  </g>
+  
+  
+  <!-- Decorative elements -->
+  <rect x="37.5" y="37.5" width="7.5" height="7.5" 
+        fill="#ef4444" transform="rotate(45 41.25 41.25)"/>
+  <rect x="147" y="37.5" width="7.5" height="7.5" 
+        fill="#facc15" transform="rotate(45 150.75 41.25)"/>
+  <rect x="37.5" y="147" width="7.5" height="7.5" 
+        fill="#22c55e" transform="rotate(45 41.25 150.75)"/>
+  <rect x="147" y="147" width="7.5" height="7.5" 
+        fill="#3b82f6" transform="rotate(45 150.75 150.75)"/>
+  
+</svg>
