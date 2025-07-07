@@ -5,6 +5,7 @@ const config = getDefaultConfig(__dirname);
 // Configure Metro to use port 8081 for React Native
 config.server = {
   port: 8081,
+  host: '0.0.0.0',
   enhanceMiddleware: (middleware) => {
     return (req, res, next) => {
       // Add CORS headers for development
@@ -16,6 +17,9 @@ config.server = {
   },
 };
 
+// Reset cache configuration
+config.resetCache = true;
+
 // Add support for additional file extensions
 config.resolver.assetExts.push('db', 'mp3', 'ttf', 'obj', 'png', 'jpg');
 
@@ -25,6 +29,7 @@ config.resolver.platforms = ['native', 'android', 'ios', 'web'];
 // Ensure proper source map generation
 config.transformer = {
   ...config.transformer,
+  unstable_allowRequireContext: true,
   minifierConfig: {
     keep_fnames: true,
     mangle: {

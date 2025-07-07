@@ -2,12 +2,18 @@
   "expo": {
     "name": "Web Ripper",
     "slug": "web-ripper",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "scheme": "webritper",
+    "scheme": "web-ripper",
     "owner": "webritper",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",

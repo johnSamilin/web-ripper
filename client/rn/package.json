@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "expo/AppEntry.js",
   "scripts": {
-    "dev": "expo start --port 8081 --clear",
+    "dev": "expo start --port 8081 --clear --dev-client",
     "dev-tunnel": "expo start --port 8081 --tunnel",
     "dev-lan": "expo start --port 8081 --lan",
+    "dev-local": "expo start --port 8081 --localhost",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web --port 19006",
@@ -15,7 +16,8 @@
     "build:ios": "eas build --platform ios --profile production",
     "build:apk": "eas build --platform android --profile production",
     "build:apk-preview": "eas build --platform android --profile preview",
-    "reset": "expo start --clear --reset-cache"
+    "reset": "expo start --clear --reset-cache",
+    "doctor": "expo doctor"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
