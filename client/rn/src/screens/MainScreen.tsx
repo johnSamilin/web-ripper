@@ -6,6 +6,7 @@ import * as WebBrowser from 'expo-web-browser';
 
 import { useSettings } from '../contexts/SettingsContext';
 import { useAuth } from '../contexts/AuthContext';
+import { logger } from '../utils/logger';
 import BrutalCard from '../components/BrutalCard';
 import BrutalButton from '../components/BrutalButton';
 import BrutalInput from '../components/BrutalInput';
@@ -15,6 +16,7 @@ import { styles, colors } from '../styles/globalStyles';
 interface MainScreenProps {
   onShowSettings: () => void;
   onShowAuth: () => void;
+  onShowLogs: () => void;
   initialUrl?: string;
   onUrlProcessed?: () => void;
 }
@@ -41,6 +43,7 @@ interface ExtractResult {
 export default function MainScreen({ 
   onShowSettings, 
   onShowAuth, 
+  onShowLogs,
   initialUrl = '',
   onUrlProcessed 
 }: MainScreenProps) {
@@ -94,8 +97,8 @@ export default function MainScreen({
     setError('');
     setResult(null);
 
-    console.log('🎯 Starting content extraction from:', url.trim());
-    console.log('📡 Using backend:', settings.backendUrl);
+    logger.info('🎯 Starting content extraction from:', url.trim());
+    logger.info('📡 Using backend:', settings.backendUrl);
 
     try {
       const headers: Record<string, string> = {
@@ -106,12 +109,12 @@ export default function MainScreen({
       if (isAuthenticated && user) {
         // Note: In real app, you'd get token from secure storage
         // For now, we'll handle this in the auth context
-        console.log('🔐 Making authenticated request for user:', user.username);
+        logger.info('🔐 Making authenticated request for user:', user.username);
       }
 
       const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
 
-      console.log(`📡 Making request to: ${settings.backendUrl}/api/extract`);
+      logger.info(`📡 Making request to: ${settings.backendUrl}/api/extract`);
       const response = await fetch(`${settings.backendUrl}/api/extract`, {
         method: 'POST',
         headers,
@@ -121,11 +124,11 @@ export default function MainScreen({
       const data = await response.json();
 
       if (!response.ok) {
-        console.error('❌ Extraction failed:', response.status, data);
+        logger.error('❌ Extraction failed:', response.status, data);
         throw new Error(data.error || 'Failed to extract content');
       }
 
-      console.log('✅ Content extraction successful:', {
+      logger.info('✅ Content extraction successful:', {
         title: data.title,
         wordCount: data.wordCount,
         hasWebDAV: !!data.webdav
@@ -135,7 +138,7 @@ export default function MainScreen({
       setUrl('');
       setTags('');
     } catch (err) {
-      console.error('❌ Extraction error:', err);
+      logger.error('❌ Extraction error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
@@ -233,6 +236,14 @@ export default function MainScreen({
           icon={<Ionicons name="settings" size={20} color={colors.black} />}
         >
           SETTINGS
+        </BrutalButton>
+        <BrutalButton
+          onPress={onShowLogs}
+          variant="secondary"
+          size="sm"
+          icon={<Ionicons name="terminal" size={20} color={colors.black} />}
+        >
+          LOGS
         </BrutalButton>
         {!isAuthenticated && (
           <BrutalButton

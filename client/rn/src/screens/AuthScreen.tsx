@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
+import { logger } from '../utils/logger';
 import BrutalCard from '../components/BrutalCard';
 import BrutalButton from '../components/BrutalButton';
 import BrutalInput from '../components/BrutalInput';

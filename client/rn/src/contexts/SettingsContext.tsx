@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
+import { logger } from '../utils/logger';
 
 interface Settings {
   backendUrl: string;
@@ -65,9 +66,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       const updatedSettings = { ...settings, ...newSettings };
       setSettings(updatedSettings);
       await storage.setItem('web-ripper-settings', JSON.stringify(updatedSettings));
-      console.log('📱 Settings updated:', updatedSettings);
+      logger.info('📱 Settings updated:', updatedSettings);
     } catch (error) {
-      console.error('Failed to save settings:', error);
+      logger.error('Failed to save settings:', error);
       throw error;
     }
   };

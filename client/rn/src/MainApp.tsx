@@ -6,6 +6,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { SettingsProvider } from './contexts/SettingsContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { logger, interceptConsole } from './utils/logger';
+import LogDrawer from './components/LogDrawer';
 import MainScreen from './screens/MainScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import AuthScreen from './screens/AuthScreen';
@@ -14,11 +16,21 @@ import { styles } from './styles/globalStyles';
 export default function MainApp() {
   const [currentScreen, setCurrentScreen] = useState<'main' | 'settings' | 'auth'>('main');
   const [sharedUrl, setSharedUrl] = useState<string>('');
+  const [showLogDrawer, setShowLogDrawer] = useState(false);
+
+  useEffect(() => {
+    // Enable console interception for mobile
+    if (Platform.OS !== 'web') {
+      interceptConsole(true);
+      logger.info('🚀 Web Ripper mobile app started');
+      logger.info(`📱 Platform: ${Platform.OS}`);
+    }
+  }, []);
 
   useEffect(() => {
     // Handle incoming URLs (share target)
     const handleUrl = (url: string) => {
-      console.log('📱 Received URL:', url);
+      logger.info('📱 Received URL:', url);
       
       // Extract URL from share intent
       if (url.includes('text=')) {
@@ -64,6 +76,7 @@ export default function MainApp() {
           <MainScreen
             onShowSettings={() => setCurrentScreen('settings')}
             onShowAuth={() => setCurrentScreen('auth')}
+            onShowLogs={() => setShowLogDrawer(true)}
             initialUrl={sharedUrl}
             onUrlProcessed={() => setSharedUrl('')}
           />
@@ -77,6 +90,10 @@ export default function MainApp() {
         <SafeAreaView style={styles.container}>
           <View style={styles.container}>
             {renderScreen()}
+            <LogDrawer 
+              visible={showLogDrawer} 
+              onClose={() => setShowLogDrawer(false)} 
+            />
           </View>
         </SafeAreaView>
       </AuthProvider>

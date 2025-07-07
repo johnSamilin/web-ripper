@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { useSettings } from '../contexts/SettingsContext';
 import { useAuth } from '../contexts/AuthContext';
+import { logger } from '../utils/logger';
 import BrutalCard from '../components/BrutalCard';
 import BrutalButton from '../components/BrutalButton';
 import BrutalInput from '../components/BrutalInput';
@@ -65,28 +66,28 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
 
     try {
       // First test the root endpoint
-      console.log('🔍 Testing root endpoint...');
+      logger.info('🔍 Testing root endpoint...');
       const rootResponse = await fetch(backendUrl.trim());
       const rootData = await rootResponse.json();
-      console.log('✅ Root endpoint response:', rootData);
+      logger.info('✅ Root endpoint response:', rootData);
       
       // Then test the health endpoint
-      console.log('🔍 Testing health endpoint...');
+      logger.info('🔍 Testing health endpoint...');
       const response = await fetch(`${backendUrl.trim()}/api/health`);
       const data = await response.json();
       
       if (response.ok) {
-        console.log('✅ Connection test successful:', data);
+        logger.info('✅ Connection test successful:', data);
         Alert.alert(
           'Connection Successful', 
           `✅ Server: ${data.status}\n🔗 API: ${rootData.name || 'Web Ripper API'}\n📅 Version: ${data.version}`
         );
       } else {
-        console.error('❌ Server returned error:', response.status, data);
+        logger.error('❌ Server returned error:', response.status, data);
         throw new Error('Server returned error');
       }
     } catch (err) {
-      console.error('❌ Connection test failed:', err);
+      logger.error('❌ Connection test failed:', err);
       Alert.alert(
         'Connection Failed', 
         `❌ Could not connect to backend server.\n\nError: ${err.message}\n\nMake sure:\n• Server is running on port 3001\n• URL is correct for your platform\n• No firewall blocking connection`
