@@ -64,19 +64,33 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
     console.log('🔍 Testing connection to:', backendUrl.trim());
 
     try {
+      // First test the root endpoint
+      console.log('🔍 Testing root endpoint...');
+      const rootResponse = await fetch(backendUrl.trim());
+      const rootData = await rootResponse.json();
+      console.log('✅ Root endpoint response:', rootData);
+      
+      // Then test the health endpoint
+      console.log('🔍 Testing health endpoint...');
       const response = await fetch(`${backendUrl.trim()}/api/health`);
       const data = await response.json();
       
       if (response.ok) {
         console.log('✅ Connection test successful:', data);
-        Alert.alert('Connection Successful', `Server is running: ${data.status}`);
+        Alert.alert(
+          'Connection Successful', 
+          `✅ Server: ${data.status}\n🔗 API: ${rootData.name || 'Web Ripper API'}\n📅 Version: ${data.version}`
+        );
       } else {
         console.error('❌ Server returned error:', response.status, data);
         throw new Error('Server returned error');
       }
     } catch (err) {
       console.error('❌ Connection test failed:', err);
-      Alert.alert('Connection Failed', 'Could not connect to backend server');
+      Alert.alert(
+        'Connection Failed', 
+        `❌ Could not connect to backend server.\n\nError: ${err.message}\n\nMake sure:\n• Server is running on port 3001\n• URL is correct for your platform\n• No firewall blocking connection`
+      );
     } finally {
       setLoading(false);
     }

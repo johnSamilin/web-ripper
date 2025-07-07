@@ -723,6 +723,74 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Root route - API information
+app.get('/', (req, res) => {
+  res.json({
+    name: 'Web Ripper API',
+    version: '2.0.0',
+    status: 'running',
+    endpoints: {
+      health: '/api/health',
+      extract: 'POST /api/extract',
+      auth: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login',
+        me: 'GET /api/auth/me'
+      },
+      webdav: {
+        settings: 'GET/POST /api/settings/webdav',
+        test: 'POST /api/settings/webdav/test',
+        files: 'GET /api/webdav/files'
+      },
+      sources: {
+        analyze: 'GET /api/analyze/sources',
+        feeds: 'POST /api/analyze/sources/feeds'
+      },
+      cleanup: 'POST /api/cleanup-css'
+    },
+    documentation: 'See README.md for full API documentation',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// API status route
+app.get('/api', (req, res) => {
+  res.json({
+    message: 'Web Ripper API is running',
+    version: '2.0.0',
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    availableEndpoints: [
+      'GET /api/health',
+      'POST /api/extract',
+      'POST /api/auth/register',
+      'POST /api/auth/login',
+      'GET /api/auth/me',
+      'GET/POST /api/settings/webdav',
+      'POST /api/settings/webdav/test',
+      'GET /api/webdav/files',
+      'GET /api/analyze/sources',
+      'POST /api/analyze/sources/feeds',
+      'POST /api/cleanup-css'
+    ]
+  });
+});
+
+// 404 handler for unknown routes
+app.use('*', (req, res) => {
+  res.status(404).json({
+    error: 'Route not found',
+    message: `The route ${req.method} ${req.originalUrl} does not exist`,
+    availableRoutes: {
+      root: 'GET /',
+      api: 'GET /api',
+      health: 'GET /api/health',
+      extract: 'POST /api/extract'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.listen(port, () => {
   console.log(`🚀 Brutal Web Ripper server running at http://localhost:${port}`);
   console.log(`🔐 Authentication optional - supports anonymous and authenticated users`);
