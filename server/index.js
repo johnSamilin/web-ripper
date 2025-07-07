@@ -33,11 +33,13 @@ app.use(helmet({
 app.use(cors({
   origin: [
     process.env.CORS_ORIGIN || 'http://localhost:5173',
-    'http://localhost:8081',  // Expo dev server
+    'http://localhost:8081',  // Expo React Native dev server
     'http://localhost:19000', // Expo classic
     'http://localhost:19006', // Expo web
     'exp://localhost:19000',  // Expo app
-    'exp://192.168.1.100:19000', // Replace with your actual IP
+    'exp://localhost:8081',   // Expo React Native
+    'http://localhost:3000',  // Common React dev port
+    'http://10.0.2.2:8081',   // Android emulator accessing host
   ],
   credentials: true
 }));

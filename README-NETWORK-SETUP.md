@@ -32,8 +32,13 @@ This happens because mobile apps/emulators can't connect to `localhost` the same
 - **Example**: `http://192.168.1.100:3001`
 
 ### **4. Expo Web**
-- **Use**: `http://localhost:3001`
+- **Use**: `http://localhost:3001` (runs on port 19006)
 - **Why**: Runs in browser, same as regular web app
+
+### **5. Expo React Native (Metro)**
+- **Port**: 8081 (Metro bundler)
+- **Web Preview**: 19006
+- **Why**: Separate ports prevent conflicts
 
 ## 🚀 **Quick Setup Steps**
 
@@ -140,7 +145,8 @@ If using a physical device:
 | Android Emulator | `http://10.0.2.2:3001` |
 | iOS Simulator | `http://localhost:3001` |
 | Physical Device | `http://YOUR_COMPUTER_IP:3001` |
-| Expo Web | `http://localhost:3001` |
+| Expo Web (port 19006) | `http://localhost:3001` |
+| Expo RN (port 8081) | Platform-specific |
 | Production | `https://your-deployed-url.com` |
 
 ## 🆘 **Still Having Issues?**

@@ -9,7 +9,7 @@ interface Settings {
 }
 
 const defaultSettings: Settings = {
-  backendUrl: 'http://10.0.2.2:3001', // Android emulator localhost
+  backendUrl: Platform.OS === 'android' ? 'http://10.0.2.2:3001' : 'http://localhost:3001',
   theme: 'brutal'
 };
 
