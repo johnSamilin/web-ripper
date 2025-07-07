@@ -52,6 +52,15 @@
           }
         },
         {
+          "action": "android.intent.action.SEND",
+          "category": [
+            "android.intent.category.DEFAULT"
+          ],
+          "data": {
+            "mimeType": "text/*"
+          }
+        },
+        {
           "action": "android.intent.action.VIEW",
           "category": [
             "android.intent.category.DEFAULT",
@@ -69,6 +78,15 @@
           ],
           "data": {
             "scheme": "http"
+          }
+        },
+        {
+          "action": "android.intent.action.SEND",
+          "category": [
+            "android.intent.category.DEFAULT"
+          ],
+          "data": {
+            "mimeType": "*/*"
           }
         }
       ]

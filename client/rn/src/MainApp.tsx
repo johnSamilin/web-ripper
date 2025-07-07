@@ -44,17 +44,27 @@ const AppContent = observer(() => {
       }
     };
 
+    // Handle Android share intents
+    const handleShareIntent = async () => {
+      try {
+        // Check if app was opened via share intent
+        const initialURL = await Linking.getInitialURL();
+        if (initialURL) {
+          store.logStore.info('📱 App opened with initial URL:', initialURL);
+          handleUrl(initialURL);
+        }
+      } catch (error) {
+        store.logStore.error('Failed to get initial URL:', error);
+      }
+    };
+
     // Listen for URL events
     const subscription = Linking.addEventListener('url', (event) => {
       handleUrl(event.url);
     });
 
-    // Check if app was opened with a URL
-    Linking.getInitialURL().then((url) => {
-      if (url) {
-        handleUrl(url);
-      }
-    });
+    // Handle share intent on app start
+    handleShareIntent();
 
     return () => {
       subscription?.remove();
