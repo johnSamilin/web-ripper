@@ -12,7 +12,9 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 
-import { logger, LogEntry } from '../utils/logger';
+import { useLogStore } from '../contexts/StoreContext';
+import { observer } from 'mobx-react-lite';
+import { LogEntry } from '../stores/LogStore';
 import BrutalButton from './BrutalButton';
 import { styles, colors } from '../styles/globalStyles';
 
@@ -21,25 +23,8 @@ interface LogDrawerProps {
   onClose: () => void;
 }
 
-export default function LogDrawer({ visible, onClose }: LogDrawerProps) {
-  const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [filter, setFilter] = useState<'all' | 'log' | 'info' | 'warn' | 'error'>('all');
-
-  useEffect(() => {
-    if (Platform.OS === 'web') return;
-
-    // Subscribe to log updates
-    const unsubscribe = logger.subscribe(setLogs);
-    
-    // Get initial logs
-    setLogs(logger.getLogs());
-
-    return unsubscribe;
-  }, []);
-
-  const filteredLogs = logs.filter(log => 
-    filter === 'all' || log.level === filter
-  );
+const LogDrawer = observer(({ visible, onClose }: LogDrawerProps) => {
+  const logStore = useLogStore();
 
   const getLogColor = (level: LogEntry['level']) => {
     switch (level) {
@@ -68,7 +53,7 @@ export default function LogDrawer({ visible, onClose }: LogDrawerProps) {
         { 
           text: 'Clear', 
           style: 'destructive',
-          onPress: () => logger.clearLogs()
+          onPress: () => logStore.clearLogs()
         }
       ]
     );
@@ -76,7 +61,7 @@ export default function LogDrawer({ visible, onClose }: LogDrawerProps) {
 
   const handleExportLogs = async () => {
     try {
-      const logsText = logger.exportLogs();
+      const logsText = logStore.exportLogs();
       
       if (Platform.OS === 'web') {
         await Clipboard.setStringAsync(logsText);
@@ -164,7 +149,7 @@ export default function LogDrawer({ visible, onClose }: LogDrawerProps) {
                 styles.uppercase,
                 { letterSpacing: 3 }
               ]}>
-                {filteredLogs.length} ENTRIES
+                {logStore.filteredLogs.length} ENTRIES
               </Text>
             </View>
           </View>
@@ -184,14 +169,14 @@ export default function LogDrawer({ visible, onClose }: LogDrawerProps) {
           {(['all', 'log', 'info', 'warn', 'error'] as const).map((level) => (
             <TouchableOpacity
               key={level}
-              onPress={() => setFilter(level)}
+              onPress={() => logStore.setFilter(level)}
               style={[
                 {
                   paddingHorizontal: 12,
                   paddingVertical: 6,
                   borderWidth: 2,
                   borderColor: colors.black,
-                  backgroundColor: filter === level ? colors.black : colors.gray200,
+                  backgroundColor: logStore.filter === level ? colors.black : colors.gray200,
                 }
               ]}
             >
@@ -200,7 +185,7 @@ export default function LogDrawer({ visible, onClose }: LogDrawerProps) {
                 styles.fontBlack,
                 styles.uppercase,
                 { 
-                  color: filter === level ? colors.white : colors.black,
+                  color: logStore.filter === level ? colors.white : colors.black,
                   letterSpacing: 1
                 }
               ]}>
@@ -238,7 +223,7 @@ export default function LogDrawer({ visible, onClose }: LogDrawerProps) {
           contentContainerStyle={styles.p4}
           showsVerticalScrollIndicator={true}
         >
-          {filteredLogs.length === 0 ? (
+          {logStore.filteredLogs.length === 0 ? (
             <View style={[styles.center, { paddingVertical: 40 }]}>
               <Ionicons name="document-text" size={48} color={colors.gray400} />
               <Text style={[
@@ -256,12 +241,12 @@ export default function LogDrawer({ visible, onClose }: LogDrawerProps) {
                 styles.textGray400,
                 { marginTop: 8 }
               ]}>
-                {filter === 'all' ? 'No logs available' : `No ${filter} logs found`}
+                {logStore.filter === 'all' ? 'No logs available' : `No ${logStore.filter} logs found`}
               </Text>
             </View>
           ) : (
             <View style={{ gap: 8 }}>
-              {filteredLogs.map((log) => (
+              {logStore.filteredLogs.map((log) => (
                 <TouchableOpacity
                   key={log.id}
                   onPress={() => handleCopyLog(log)}
@@ -336,4 +321,6 @@ export default function LogDrawer({ visible, onClose }: LogDrawerProps) {
       </View>
     </Modal>
   );
-}
+});
+
+export default LogDrawer;

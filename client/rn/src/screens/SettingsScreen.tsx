@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { View, ScrollView, Text, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useSettings } from '../contexts/SettingsContext';
-import { useAuth } from '../contexts/AuthContext';
-import { logger } from '../utils/logger';
+import { useAuthStore, useSettingsStore } from '../contexts/StoreContext';
+import { observer } from 'mobx-react-lite';
 import BrutalCard from '../components/BrutalCard';
 import BrutalButton from '../components/BrutalButton';
 import BrutalInput from '../components/BrutalInput';
@@ -15,11 +14,11 @@ interface SettingsScreenProps {
   onBack: () => void;
 }
 
-export default function SettingsScreen({ onBack }: SettingsScreenProps) {
-  const { settings, updateSettings } = useSettings();
-  const { logout, isAuthenticated, user } = useAuth();
+const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
+  const authStore = useAuthStore();
+  const settingsStore = useSettingsStore();
   
-  const [backendUrl, setBackendUrl] = useState(settings.backendUrl);
+  const [backendUrl, setBackendUrl] = useState(settingsStore.settings.backendUrl);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -43,7 +42,7 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
     setSuccess('');
 
     try {
-      await updateSettings({ backendUrl: backendUrl.trim() });
+      await settingsStore.updateSettings({ backendUrl: backendUrl.trim() });
       setSuccess('Settings saved successfully!');
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
@@ -62,26 +61,11 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
     setLoading(true);
     setError('');
     
-    console.log('🔍 Testing connection to:', backendUrl.trim());
-
     try {
-      // First test the root endpoint
-      logger.info('🔍 Testing root endpoint...');
-      const rootResponse = await fetch(backendUrl.trim());
-      const rootData = await rootResponse.json();
-      logger.info('✅ Root endpoint response:', rootData);
-      
-      // Then test the health endpoint
-      logger.info('🔍 Testing health endpoint...');
-      const response = await fetch(`${backendUrl.trim()}/api/health`);
-      const data = await response.json();
-      
-      if (response.ok) {
-        logger.info('✅ Connection test successful:', data);
-        Alert.alert(
-          'Connection Successful', 
-          `✅ Server: ${data.status}\n🔗 API: ${rootData.name || 'Web Ripper API'}\n📅 Version: ${data.version}`
-        );
+      const result = await settingsStore.testConnection(backendUrl.trim());
+      Alert.alert('Connection Successful', result.message);
+    } catch (err: any) {
+      Alert.alert('Connection Failed', err.message);
       } else {
         logger.error('❌ Server returned error:', response.status, data);
         throw new Error('Server returned error');
@@ -95,19 +79,12 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleLogout = async () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
+    
+    setLoading(false);
           text: 'Logout', 
           style: 'destructive',
           onPress: async () => {
-            await logout();
+            await authStore.logout();
             onBack();
           }
         }
@@ -191,7 +168,7 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
           </BrutalCard>
 
           {/* Account Information */}
-          {isAuthenticated && user && (
+          {authStore.isAuthenticated && authStore.user && (
             <BrutalCard title="ACCOUNT" titleBg={colors.green500}>
               <View style={{ gap: 16 }}>
                 <View>
@@ -248,7 +225,7 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
                       width: 12,
                       height: 12,
                       borderRadius: 6,
-                      backgroundColor: user.hasWebDAV ? colors.green500 : colors.red500,
+                      backgroundColor: authStore.user.hasWebDAV ? colors.green500 : colors.red500,
                     }
                   ]} />
                   <Text style={[
@@ -257,7 +234,7 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
                     styles.textGray700,
                     styles.uppercase
                   ]}>
-                    WebDAV: {user.hasWebDAV ? 'CONFIGURED' : 'NOT CONFIGURED'}
+                    WebDAV: {authStore.user.hasWebDAV ? 'CONFIGURED' : 'NOT CONFIGURED'}
                   </Text>
                 </View>
 
@@ -325,7 +302,7 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
                   styles.fontBlack,
                   styles.textBlack
                 ]}>
-                  {settings.backendUrl ? 'CONFIGURED' : 'NOT SET'}
+                  {settingsStore.settings.backendUrl ? 'CONFIGURED' : 'NOT SET'}
                 </Text>
               </View>
             </View>
@@ -334,4 +311,6 @@ export default function SettingsScreen({ onBack }: SettingsScreenProps) {
       </ScrollView>
     </View>
   );
-}
+});
+
+export default SettingsScreen;

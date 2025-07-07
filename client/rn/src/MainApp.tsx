@@ -4,33 +4,29 @@ import * as Linking from 'expo-linking';
 import * as SecureStore from 'expo-secure-store';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { SettingsProvider } from './contexts/SettingsContext';
-import { AuthProvider } from './contexts/AuthContext';
-import { logger, interceptConsole } from './utils/logger';
+import { StoreProvider, useStore } from './contexts/StoreContext';
+import { observer } from 'mobx-react-lite';
 import LogDrawer from './components/LogDrawer';
 import MainScreen from './screens/MainScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import AuthScreen from './screens/AuthScreen';
 import { styles } from './styles/globalStyles';
 
-export default function MainApp() {
-  const [currentScreen, setCurrentScreen] = useState<'main' | 'settings' | 'auth'>('main');
-  const [sharedUrl, setSharedUrl] = useState<string>('');
-  const [showLogDrawer, setShowLogDrawer] = useState(false);
+const AppContent = observer(() => {
+  const store = useStore();
 
   useEffect(() => {
     // Enable console interception for mobile
     if (Platform.OS !== 'web') {
-      interceptConsole(true);
-      logger.info('🚀 Web Ripper mobile app started');
-      logger.info(`📱 Platform: ${Platform.OS}`);
+      store.logStore.info('🚀 Web Ripper mobile app started');
+      store.logStore.info(`📱 Platform: ${Platform.OS}`);
     }
   }, []);
 
   useEffect(() => {
     // Handle incoming URLs (share target)
     const handleUrl = (url: string) => {
-      logger.info('📱 Received URL:', url);
+      store.logStore.info('📱 Received URL:', url);
       
       // Extract URL from share intent
       if (url.includes('text=')) {
@@ -38,13 +34,13 @@ export default function MainApp() {
         if (urlMatch) {
           const decodedUrl = decodeURIComponent(urlMatch[1]);
           if (decodedUrl.startsWith('http')) {
-            setSharedUrl(decodedUrl);
-            setCurrentScreen('main');
+            store.setSharedUrl(decodedUrl);
+            store.setCurrentScreen('main');
           }
         }
       } else if (url.startsWith('http')) {
-        setSharedUrl(url);
-        setCurrentScreen('main');
+        store.setSharedUrl(url);
+        store.setCurrentScreen('main');
       }
     };
 
@@ -66,37 +62,41 @@ export default function MainApp() {
   }, []);
 
   const renderScreen = () => {
-    switch (currentScreen) {
+    switch (store.currentScreen) {
       case 'settings':
-        return <SettingsScreen onBack={() => setCurrentScreen('main')} />;
+        return <SettingsScreen onBack={() => store.setCurrentScreen('main')} />;
       case 'auth':
-        return <AuthScreen onBack={() => setCurrentScreen('main')} />;
+        return <AuthScreen onBack={() => store.setCurrentScreen('main')} />;
       default:
         return (
           <MainScreen
-            onShowSettings={() => setCurrentScreen('settings')}
-            onShowAuth={() => setCurrentScreen('auth')}
-            onShowLogs={() => setShowLogDrawer(true)}
-            initialUrl={sharedUrl}
-            onUrlProcessed={() => setSharedUrl('')}
+            onShowSettings={() => store.setCurrentScreen('settings')}
+            onShowAuth={() => store.setCurrentScreen('auth')}
+            onShowLogs={() => store.setShowLogDrawer(true)}
+            initialUrl={store.sharedUrl}
+            onUrlProcessed={() => store.clearSharedUrl()}
           />
         );
     }
   };
 
   return (
-    <SettingsProvider>
-      <AuthProvider>
-        <SafeAreaView style={styles.container}>
-          <View style={styles.container}>
-            {renderScreen()}
-            <LogDrawer 
-              visible={showLogDrawer} 
-              onClose={() => setShowLogDrawer(false)} 
-            />
-          </View>
-        </SafeAreaView>
-      </AuthProvider>
-    </SettingsProvider>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        {renderScreen()}
+        <LogDrawer 
+          visible={store.showLogDrawer} 
+          onClose={() => store.setShowLogDrawer(false)} 
+        />
+      </View>
+    </SafeAreaView>
+  );
+});
+
+export default function MainApp() {
+  return (
+    <StoreProvider>
+      <AppContent />
+    </StoreProvider>
   );
 }

@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { useAuth } from '../contexts/AuthContext';
-import { useSettings } from '../contexts/SettingsContext';
-import { logger } from '../utils/logger';
+import { useAuthStore, useSettingsStore } from '../contexts/StoreContext';
+import { observer } from 'mobx-react-lite';
 import BrutalCard from '../components/BrutalCard';
 import BrutalButton from '../components/BrutalButton';
 import BrutalInput from '../components/BrutalInput';
@@ -15,9 +14,9 @@ interface AuthScreenProps {
   onBack: () => void;
 }
 
-export default function AuthScreen({ onBack }: AuthScreenProps) {
-  const { login, register } = useAuth();
-  const { settings } = useSettings();
+const AuthScreen = observer(({ onBack }: AuthScreenProps) => {
+  const authStore = useAuthStore();
+  const settingsStore = useSettingsStore();
   
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
@@ -27,7 +26,7 @@ export default function AuthScreen({ onBack }: AuthScreenProps) {
   const [error, setError] = useState('');
 
   const handleSubmit = async () => {
-    if (!settings.backendUrl) {
+    if (!settingsStore.settings.backendUrl) {
       setError('Backend URL not configured. Please go to settings first.');
       return;
     }
@@ -52,9 +51,9 @@ export default function AuthScreen({ onBack }: AuthScreenProps) {
 
     try {
       if (isLogin) {
-        await login(username.trim(), password, settings.backendUrl);
+        await authStore.login(username.trim(), password, settingsStore.settings.backendUrl);
       } else {
-        await register(username.trim(), email.trim(), password, settings.backendUrl);
+        await authStore.register(username.trim(), email.trim(), password, settingsStore.settings.backendUrl);
       }
       onBack();
     } catch (err) {
@@ -197,4 +196,6 @@ export default function AuthScreen({ onBack }: AuthScreenProps) {
       </ScrollView>
     </View>
   );
-}
+});
+
+export default AuthScreen;

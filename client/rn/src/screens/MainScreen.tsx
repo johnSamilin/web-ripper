@@ -4,9 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import * as WebBrowser from 'expo-web-browser';
 
-import { useSettings } from '../contexts/SettingsContext';
-import { useAuth } from '../contexts/AuthContext';
-import { logger } from '../utils/logger';
+import { useAuthStore, useSettingsStore, useExtractionStore } from '../contexts/StoreContext';
+import { observer } from 'mobx-react-lite';
 import BrutalCard from '../components/BrutalCard';
 import BrutalButton from '../components/BrutalButton';
 import BrutalInput from '../components/BrutalInput';
@@ -21,59 +20,35 @@ interface MainScreenProps {
   onUrlProcessed?: () => void;
 }
 
-interface ExtractResult {
-  success: boolean;
-  title: string;
-  description: string;
-  filename: string;
-  content: string;
-  wordCount: number;
-  imageCount?: number;
-  url: string;
-  tags?: string[];
-  format?: string;
-  webdav?: {
-    uploaded: boolean;
-    path: string;
-    url: string;
-    metadataPath?: string;
-  };
-}
-
-export default function MainScreen({ 
+const MainScreen = observer(({ 
   onShowSettings, 
   onShowAuth, 
   onShowLogs,
   initialUrl = '',
   onUrlProcessed 
-}: MainScreenProps) {
-  const { settings } = useSettings();
-  const { user, isAuthenticated, checkAuth } = useAuth();
-  
-  const [url, setUrl] = useState(initialUrl);
-  const [tags, setTags] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [result, setResult] = useState<ExtractResult | null>(null);
+}: MainScreenProps) => {
+  const authStore = useAuthStore();
+  const settingsStore = useSettingsStore();
+  const extractionStore = useExtractionStore();
 
   useEffect(() => {
     if (initialUrl) {
-      setUrl(initialUrl);
+      extractionStore.setUrl(initialUrl);
       onUrlProcessed?.();
     }
   }, [initialUrl]);
 
   useEffect(() => {
-    if (isAuthenticated && settings.backendUrl) {
-      checkAuth(settings.backendUrl);
+    if (authStore.isAuthenticated && settingsStore.settings.backendUrl) {
+      authStore.checkAuth(settingsStore.settings.backendUrl);
     }
-  }, [settings.backendUrl, isAuthenticated]);
+  }, [settingsStore.settings.backendUrl, authStore.isAuthenticated]);
 
   const handlePasteFromClipboard = async () => {
     try {
       const clipboardContent = await Clipboard.getStringAsync();
       if (clipboardContent.startsWith('http')) {
-        setUrl(clipboardContent);
+        extractionStore.setUrl(clipboardContent);
       } else {
         Alert.alert('No URL Found', 'Clipboard does not contain a valid URL');
       }
@@ -83,99 +58,39 @@ export default function MainScreen({
   };
 
   const handleExtract = async () => {
-    if (!url.trim()) {
-      setError('URL is required');
-      return;
-    }
-
-    if (!settings.backendUrl) {
-      Alert.alert('Backend URL Required', 'Please configure backend URL in settings');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-    setResult(null);
-
-    logger.info('🎯 Starting content extraction from:', url.trim());
-    logger.info('📡 Using backend:', settings.backendUrl);
-
-    try {
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json'
-      };
-
-      // Add auth header if authenticated
-      if (isAuthenticated && user) {
-        // Note: In real app, you'd get token from secure storage
-        // For now, we'll handle this in the auth context
-        logger.info('🔐 Making authenticated request for user:', user.username);
-      }
-
-      const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
-
-      logger.info(`📡 Making request to: ${settings.backendUrl}/api/extract`);
-      const response = await fetch(`${settings.backendUrl}/api/extract`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ url: url.trim(), tags: tagsArray }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        logger.error('❌ Extraction failed:', response.status, data);
-        throw new Error(data.error || 'Failed to extract content');
-      }
-
-      logger.info('✅ Content extraction successful:', {
-        title: data.title,
-        wordCount: data.wordCount,
-        hasWebDAV: !!data.webdav
-      });
-
-      setResult(data);
-      setUrl('');
-      setTags('');
-    } catch (err) {
-      logger.error('❌ Extraction error:', err);
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
-    }
+    await extractionStore.extractContent();
   };
 
   const handleDownload = async () => {
-    if (!result) return;
+    if (!extractionStore.result) return;
 
     if (Platform.OS === 'web') {
       // Web download
-      const blob = new Blob([result.content], { 
-        type: result.format === 'html' ? 'text/html' : 'text/markdown' 
+      const blob = new Blob([extractionStore.result.content], { 
+        type: extractionStore.result.format === 'html' ? 'text/html' : 'text/markdown' 
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = result.filename;
+      a.download = extractionStore.result.filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } else {
       // Mobile - copy to clipboard for now
-      await Clipboard.setStringAsync(result.content);
+      await Clipboard.setStringAsync(extractionStore.result.content);
       Alert.alert('Copied!', 'Content copied to clipboard');
     }
   };
 
   const handleOpenInBrowser = async () => {
-    if (!result) return;
-    await WebBrowser.openBrowserAsync(result.url);
+    if (!extractionStore.result) return;
+    await WebBrowser.openBrowserAsync(extractionStore.result.url);
   };
 
   const handleReset = () => {
-    setResult(null);
-    setError('');
+    extractionStore.reset();
   };
 
   const renderHeader = () => (
@@ -204,7 +119,7 @@ export default function MainScreen({
           ]}>
             WEB RIPPER
           </Text>
-          {isAuthenticated ? (
+          {authStore.isAuthenticated ? (
             <Text style={[
               styles.textSm,
               styles.fontBold,
@@ -212,7 +127,7 @@ export default function MainScreen({
               styles.uppercase,
               { letterSpacing: 3 }
             ]}>
-              @{user?.username}
+              @{authStore.user?.username}
             </Text>
           ) : (
             <Text style={[
@@ -245,7 +160,7 @@ export default function MainScreen({
         >
           LOGS
         </BrutalButton>
-        {!isAuthenticated && (
+        {!authStore.isAuthenticated && (
           <BrutalButton
             onPress={onShowAuth}
             variant="primary"
@@ -299,8 +214,8 @@ export default function MainScreen({
 
       <View style={{ gap: 16 }}>
         <BrutalInput
-          value={url}
-          onChangeText={setUrl}
+          value={extractionStore.url}
+          onChangeText={extractionStore.setUrl}
           placeholder="https://victim-site.com/article"
           label="VICTIM URL"
           keyboardType="url"
@@ -320,35 +235,37 @@ export default function MainScreen({
           </BrutalButton>
         </View>
 
-        {isAuthenticated && user?.hasWebDAV && (
+        {authStore.isAuthenticated && authStore.user?.hasWebDAV && (
           <BrutalInput
-            value={tags}
-            onChangeText={setTags}
+            value={extractionStore.tags}
+            onChangeText={extractionStore.setTags}
             placeholder="research, ai, tutorial"
             label="TAGS (COMMA SEPARATED)"
             autoCapitalize="none"
           />
         )}
 
-        {error && (
-          <AlertMessage type="error" title="MISSION FAILED" message={error} />
+        {extractionStore.error && (
+          <AlertMessage type="error" title="MISSION FAILED" message={extractionStore.error} />
         )}
 
         <BrutalButton
           onPress={handleExtract}
-          disabled={loading || !url.trim()}
-          loading={loading}
+          disabled={extractionStore.loading || !extractionStore.url.trim()}
+          loading={extractionStore.loading}
           variant="primary"
-          icon={!loading && <Ionicons name="flash" size={20} color={colors.white} />}
+          icon={!extractionStore.loading && <Ionicons name="flash" size={20} color={colors.white} />}
         >
-          {loading ? 'RIPPING...' : 'DESTROY & EXTRACT'}
+          {extractionStore.loading ? 'RIPPING...' : 'DESTROY & EXTRACT'}
         </BrutalButton>
       </View>
     </BrutalCard>
   );
 
   const renderResult = () => {
-    if (!result) return null;
+    if (!extractionStore.result) return null;
+    
+    const result = extractionStore.result;
 
     return (
       <BrutalCard title="MISSION COMPLETE" titleBg={colors.green500}>
@@ -588,9 +505,9 @@ export default function MainScreen({
           styles.center
         ]}>
           <Ionicons 
-            name={isAuthenticated && user?.hasWebDAV ? "cloud" : "download"} 
+            name={authStore.isAuthenticated && authStore.user?.hasWebDAV ? "cloud" : "download"} 
             size={24} 
-            color={isAuthenticated && user?.hasWebDAV ? colors.white : colors.black} 
+            color={authStore.isAuthenticated && authStore.user?.hasWebDAV ? colors.white : colors.black} 
           />
         </View>
         <View style={{ flex: 1 }}>
@@ -601,7 +518,7 @@ export default function MainScreen({
             styles.uppercase,
             { letterSpacing: 1 }
           ]}>
-            {isAuthenticated && user?.hasWebDAV ? 'CLOUD STORAGE' : 'INSTANT LOOT'}
+            {authStore.isAuthenticated && authStore.user?.hasWebDAV ? 'CLOUD STORAGE' : 'INSTANT LOOT'}
           </Text>
           <Text style={[
             styles.textXs,
@@ -609,7 +526,7 @@ export default function MainScreen({
             styles.textGray700,
             styles.uppercase
           ]}>
-            {isAuthenticated && user?.hasWebDAV ? 'UPLOADS TO WEBDAV' : 'DOWNLOAD IN SECONDS'}
+            {authStore.isAuthenticated && authStore.user?.hasWebDAV ? 'UPLOADS TO WEBDAV' : 'DOWNLOAD IN SECONDS'}
           </Text>
         </View>
       </View>
@@ -663,7 +580,7 @@ export default function MainScreen({
       {renderHeader()}
       <ScrollView style={styles.flex1} contentContainerStyle={styles.p4}>
         <View style={{ gap: 24 }}>
-          {!result ? (
+          {!extractionStore.result ? (
             <>
               {renderExtractionForm()}
               {renderInfoSection()}
@@ -675,4 +592,6 @@ export default function MainScreen({
       </ScrollView>
     </View>
   );
-}
+});
+
+export default MainScreen;
