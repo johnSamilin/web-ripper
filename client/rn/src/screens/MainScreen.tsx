@@ -94,7 +94,7 @@ export default function MainScreen({
     setError('');
     setResult(null);
 
-    console.log('🎯 Starting content extraction from:', validUrl.href);
+    console.log('🎯 Starting content extraction from:', url.trim());
     console.log('📡 Using backend:', settings.backendUrl);
 
     try {
@@ -111,6 +111,7 @@ export default function MainScreen({
 
       const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
 
+      console.log(`📡 Making request to: ${settings.backendUrl}/api/extract`);
       const response = await fetch(`${settings.backendUrl}/api/extract`, {
         method: 'POST',
         headers,
