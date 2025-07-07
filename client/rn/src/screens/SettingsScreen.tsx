@@ -66,21 +66,21 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
       Alert.alert('Connection Successful', result.message);
     } catch (err: any) {
       Alert.alert('Connection Failed', err.message);
-      } else {
-        logger.error('❌ Server returned error:', response.status, data);
-        throw new Error('Server returned error');
-      }
-    } catch (err) {
-      logger.error('❌ Connection test failed:', err);
-      Alert.alert(
-        'Connection Failed', 
-        `❌ Could not connect to backend server.\n\nError: ${err.message}\n\nMake sure:\n• Server is running on port 3001\n• URL is correct for your platform\n• No firewall blocking connection`
-      );
     } finally {
       setLoading(false);
     }
-    
-    setLoading(false);
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Confirm Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel'
+        },
+        {
           text: 'Logout', 
           style: 'destructive',
           onPress: async () => {
@@ -190,7 +190,7 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
                       styles.fontBold,
                       styles.textGray700
                     ]}>
-                      {user.username}
+                      {authStore.user.username}
                     </Text>
                   </View>
                 </View>
@@ -214,7 +214,7 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
                       styles.fontBold,
                       styles.textGray700
                     ]}>
-                      {user.email}
+                      {authStore.user.email}
                     </Text>
                   </View>
                 </View>
