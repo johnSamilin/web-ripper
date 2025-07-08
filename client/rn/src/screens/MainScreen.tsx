@@ -110,27 +110,7 @@ const MainScreen = observer(({
           ]}>
             <Ionicons name="skull" size={20} color={colors.red500} />
           </View>
-          {authStore.isAuthenticated ? (
-            <Text style={[
-              styles.textSm,
-              styles.fontBold,
-              styles.textRed600,
-              styles.uppercase,
-              { letterSpacing: 1 }
-            ]}>
-              @{authStore.user?.username}
-            </Text>
-          ) : (
-            <Text style={[
-              styles.textSm,
-              styles.fontBold,
-              styles.textGray600,
-              styles.uppercase,
-              { letterSpacing: 1 }
-            ]}>
-              ANONYMOUS
-            </Text>
-          )}
+          
         </View>
       
         <View style={[styles.row, { gap: 6, flexShrink: 1 }]}>
@@ -162,6 +142,27 @@ const MainScreen = observer(({
           )}
         </View>
       </View>
+      {authStore.isAuthenticated ? (
+        <Text style={[
+          styles.textSm,
+          styles.fontBold,
+          styles.textRed600,
+          styles.uppercase,
+          { letterSpacing: 1 }
+        ]}>
+          @{authStore.user?.username}
+        </Text>
+      ) : (
+        <Text style={[
+          styles.textSm,
+          styles.fontBold,
+          styles.textGray600,
+          styles.uppercase,
+          { letterSpacing: 1 }
+        ]}>
+          ANON
+        </Text>
+      )}
     </View>
   );
 
