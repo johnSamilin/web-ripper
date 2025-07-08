@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -19,9 +20,41 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
   const settingsStore = useSettingsStore();
   
   const [backendUrl, setBackendUrl] = useState(settingsStore.settings.backendUrl);
+  const [webdavUrl, setWebdavUrl] = useState('');
+  const [webdavUsername, setWebdavUsername] = useState('');
+  const [webdavPassword, setWebdavPassword] = useState('');
+  const [webdavLoading, setWebdavLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [webdavError, setWebdavError] = useState('');
+  const [webdavSuccess, setWebdavSuccess] = useState('');
+
+  // Load WebDAV settings when component mounts
+  useEffect(() => {
+    if (authStore.isAuthenticated) {
+      loadWebDAVSettings();
+    }
+  }, [authStore.isAuthenticated]);
+
+  const loadWebDAVSettings = async () => {
+    try {
+      const response = await fetch(`${settingsStore.settings.backendUrl}/api/settings/webdav`, {
+        headers: {
+          'Authorization': `Bearer ${authStore.token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setWebdavUrl(data.webdav.url || '');
+        setWebdavUsername(data.webdav.username || '');
+        // Don't load password for security
+      }
+    } catch (error) {
+      console.error('Failed to load WebDAV settings:', error);
+    }
+  };
 
   const handleSaveSettings = async () => {
     if (!backendUrl.trim()) {
@@ -68,6 +101,86 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
       Alert.alert('Connection Failed', err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveWebDAV = async () => {
+    if (!authStore.isAuthenticated) return;
+
+    setWebdavLoading(true);
+    setWebdavError('');
+    setWebdavSuccess('');
+
+    try {
+      const response = await fetch(`${settingsStore.settings.backendUrl}/api/settings/webdav`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authStore.token}`
+        },
+        body: JSON.stringify({
+          url: webdavUrl.trim(),
+          username: webdavUsername.trim(),
+          password: webdavPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setWebdavSuccess('WebDAV settings saved successfully!');
+        // Update user's hasWebDAV status
+        if (authStore.user) {
+          authStore.user.hasWebDAV = data.webdav.isConfigured;
+        }
+        setTimeout(() => setWebdavSuccess(''), 3000);
+      } else {
+        setWebdavError(data.error || 'Failed to save WebDAV settings');
+      }
+    } catch (err) {
+      setWebdavError('Failed to save WebDAV settings');
+    } finally {
+      setWebdavLoading(false);
+    }
+  };
+
+  const handleTestWebDAV = async () => {
+    if (!authStore.isAuthenticated) return;
+
+    if (!webdavUrl.trim() || !webdavUsername.trim() || !webdavPassword.trim()) {
+      setWebdavError('URL, username, and password are required for testing');
+      return;
+    }
+
+    setWebdavLoading(true);
+    setWebdavError('');
+    setWebdavSuccess('');
+
+    try {
+      const response = await fetch(`${settingsStore.settings.backendUrl}/api/settings/webdav/test`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authStore.token}`
+        },
+        body: JSON.stringify({
+          url: webdavUrl.trim(),
+          username: webdavUsername.trim(),
+          password: webdavPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Connection Successful', data.message);
+      } else {
+        Alert.alert('Connection Failed', data.error);
+      }
+    } catch (err) {
+      Alert.alert('Connection Failed', 'Could not connect to WebDAV server');
+    } finally {
+      setWebdavLoading(false);
     }
   };
 
@@ -263,8 +376,8 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
                 </Text>
 
                 <BrutalInput
-                  value=""
-                  onChangeText={() => {}}
+                  value={webdavUrl}
+                  onChangeText={setWebdavUrl}
                   placeholder="https://webdav.example.com/"
                   label="WEBDAV URL"
                   keyboardType="url"
@@ -273,8 +386,8 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
                 />
 
                 <BrutalInput
-                  value=""
-                  onChangeText={() => {}}
+                  value={webdavUsername}
+                  onChangeText={setWebdavUsername}
                   placeholder="username"
                   label="USERNAME"
                   autoCapitalize="none"
@@ -282,8 +395,8 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
                 />
 
                 <BrutalInput
-                  value=""
-                  onChangeText={() => {}}
+                  value={webdavPassword}
+                  onChangeText={setWebdavPassword}
                   placeholder="••••••••"
                   label="PASSWORD"
                   secureTextEntry
@@ -291,9 +404,18 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
                   icon={<Ionicons name="lock-closed" size={20} color={colors.blue600} />}
                 />
 
+                {webdavError && (
+                  <AlertMessage type="error" message={webdavError} />
+                )}
+
+                {webdavSuccess && (
+                  <AlertMessage type="success" message={webdavSuccess} />
+                )}
+
                 <View style={[styles.row, { gap: 8 }]}>
                   <BrutalButton
-                    onPress={() => {}}
+                    onPress={handleTestWebDAV}
+                    disabled={webdavLoading}
                     variant="secondary"
                     style={{ flex: 1 }}
                     icon={<Ionicons name="wifi" size={20} color={colors.black} />}
@@ -301,10 +423,12 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
                     TEST
                   </BrutalButton>
                   <BrutalButton
-                    onPress={() => {}}
+                    onPress={handleSaveWebDAV}
+                    disabled={webdavLoading}
+                    loading={webdavLoading}
                     variant="primary"
                     style={{ flex: 1 }}
-                    icon={<Ionicons name="save" size={20} color={colors.white} />}
+                    icon={!webdavLoading && <Ionicons name="save" size={20} color={colors.white} />}
                   >
                     SAVE
                   </BrutalButton>
