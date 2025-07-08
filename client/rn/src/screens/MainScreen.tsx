@@ -96,37 +96,27 @@ const MainScreen = observer(({
   const renderHeader = () => (
     <View style={[styles.p4]}>
       <View style={[styles.row, styles.spaceBetween, styles.alignCenter]}>
-      <View style={[styles.row, styles.alignCenter, { gap: 16 }]}>
-        <View style={[
-          {
-            width: 48,
-            height: 48,
-            backgroundColor: colors.black,
-            borderWidth: 4,
-            borderColor: colors.red500,
-            transform: [{ rotate: '12deg' }],
-          },
-          styles.center
-        ]}>
-          <Ionicons name="skull" size={24} color={colors.red500} />
-        </View>
-        <View>
-          <Text style={[
-            styles.text2xl,
-            styles.fontBlack,
-            styles.textBlack,
-            styles.uppercase,
-            { letterSpacing: 2, transform: [{ skewX: '-5deg' }] }
+        <View style={[styles.row, styles.alignCenter, { gap: 12 }]}>
+          <View style={[
+            {
+              width: 40,
+              height: 40,
+              backgroundColor: colors.black,
+              borderWidth: 3,
+              borderColor: colors.red500,
+              transform: [{ rotate: '12deg' }],
+            },
+            styles.center
           ]}>
-            WEB RIPPER
-          </Text>
+            <Ionicons name="skull" size={20} color={colors.red500} />
+          </View>
           {authStore.isAuthenticated ? (
             <Text style={[
               styles.textSm,
               styles.fontBold,
               styles.textRed600,
               styles.uppercase,
-              { letterSpacing: 3 }
+              { letterSpacing: 1 }
             ]}>
               @{authStore.user?.username}
             </Text>
@@ -136,45 +126,41 @@ const MainScreen = observer(({
               styles.fontBold,
               styles.textGray600,
               styles.uppercase,
-              { letterSpacing: 3 }
+              { letterSpacing: 1 }
             ]}>
-              ANONYMOUS MODE
+              ANONYMOUS
             </Text>
           )}
         </View>
-      </View>
       
-      <View style={[styles.row, { gap: 4, flexShrink: 1 }]}>
-        <BrutalButton
-          onPress={onShowSettings}
-          variant="secondary"
-          size="sm"
-          icon={<Ionicons name="settings" size={20} color={colors.black} />}
-          style={{ minWidth: 60 }}
-        >
-          SET
-        </BrutalButton>
-        <BrutalButton
-          onPress={onShowLogs}
-          variant="secondary"
-          size="sm"
-          icon={<Ionicons name="terminal" size={20} color={colors.black} />}
-          style={{ minWidth: 60 }}
-        >
-          LOG
-        </BrutalButton>
-        {!authStore.isAuthenticated && (
+        <View style={[styles.row, { gap: 6, flexShrink: 1 }]}>
           <BrutalButton
-            onPress={onShowAuth}
-            variant="primary"
+            onPress={onShowSettings}
+            variant="secondary"
             size="sm"
-            icon={<Ionicons name="person-add" size={20} color={colors.white} />}
-            style={{ minWidth: 60 }}
+            icon={<Ionicons name="settings" size={18} color={colors.black} />}
           >
-            LOG
+            SETTINGS
           </BrutalButton>
-        )}
-      </View>
+          <BrutalButton
+            onPress={onShowLogs}
+            variant="secondary"
+            size="sm"
+            icon={<Ionicons name="terminal" size={18} color={colors.black} />}
+          >
+            LOGS
+          </BrutalButton>
+          {!authStore.isAuthenticated && (
+            <BrutalButton
+              onPress={onShowAuth}
+              variant="primary"
+              size="sm"
+              icon={<Ionicons name="person-add" size={18} color={colors.white} />}
+            >
+              LOGIN
+            </BrutalButton>
+          )}
+        </View>
       </View>
     </View>
   );

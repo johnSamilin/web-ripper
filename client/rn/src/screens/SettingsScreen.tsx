@@ -95,9 +95,8 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
   const renderHeader = () => (
     <View style={[styles.p4]}>
       <View style={[styles.row, styles.spaceBetween, styles.alignCenter]}>
-      <View style={[styles.row, styles.alignCenter, { gap: 16 }]}>
         <Text style={[
-          styles.text2xl,
+          styles.textXl,
           styles.fontBlack,
           styles.textBlack,
           styles.uppercase,
@@ -105,17 +104,15 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
         ]}>
           SETTINGS
         </Text>
-      </View>
       
-      <BrutalButton
-        onPress={onBack}
-        variant="secondary"
-        size="sm"
-        icon={<Ionicons name="arrow-back" size={20} color={colors.black} />}
-        style={{ minWidth: 60 }}
-      >
-        ←
-      </BrutalButton>
+        <BrutalButton
+          onPress={onBack}
+          variant="secondary"
+          size="sm"
+          icon={<Ionicons name="arrow-back" size={18} color={colors.black} />}
+        >
+          BACK
+        </BrutalButton>
       </View>
     </View>
   );
@@ -171,7 +168,7 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
           </BrutalCard>
 
           {/* Account Information */}
-          {authStore.isAuthenticated && authStore.user && (
+          {authStore.isAuthenticated && (
             <BrutalCard title="ACCOUNT" titleBg={colors.green500}>
               <View style={{ gap: 16 }}>
                 <View>
@@ -248,6 +245,100 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
                 >
                   LOGOUT
                 </BrutalButton>
+              </View>
+            </BrutalCard>
+          )}
+
+          {/* WebDAV Settings */}
+          {authStore.isAuthenticated && (
+            <BrutalCard title="WEBDAV STORAGE" titleBg={colors.blue600}>
+              <View style={{ gap: 16 }}>
+                <Text style={[
+                  styles.textSm,
+                  styles.fontBold,
+                  styles.textGray700,
+                  { marginBottom: 8 }
+                ]}>
+                  Configure cloud storage for automatic article uploads
+                </Text>
+
+                <BrutalInput
+                  value=""
+                  onChangeText={() => {}}
+                  placeholder="https://webdav.example.com/"
+                  label="WEBDAV URL"
+                  keyboardType="url"
+                  autoCapitalize="none"
+                  icon={<Ionicons name="cloud" size={20} color={colors.blue600} />}
+                />
+
+                <BrutalInput
+                  value=""
+                  onChangeText={() => {}}
+                  placeholder="username"
+                  label="USERNAME"
+                  autoCapitalize="none"
+                  icon={<Ionicons name="person" size={20} color={colors.blue600} />}
+                />
+
+                <BrutalInput
+                  value=""
+                  onChangeText={() => {}}
+                  placeholder="••••••••"
+                  label="PASSWORD"
+                  secureTextEntry
+                  autoCapitalize="none"
+                  icon={<Ionicons name="lock-closed" size={20} color={colors.blue600} />}
+                />
+
+                <View style={[styles.row, { gap: 8 }]}>
+                  <BrutalButton
+                    onPress={() => {}}
+                    variant="secondary"
+                    style={{ flex: 1 }}
+                    icon={<Ionicons name="wifi" size={20} color={colors.black} />}
+                  >
+                    TEST
+                  </BrutalButton>
+                  <BrutalButton
+                    onPress={() => {}}
+                    variant="primary"
+                    style={{ flex: 1 }}
+                    icon={<Ionicons name="save" size={20} color={colors.white} />}
+                  >
+                    SAVE
+                  </BrutalButton>
+                </View>
+
+                <View style={[
+                  {
+                    backgroundColor: colors.gray100,
+                    borderWidth: 2,
+                    borderColor: colors.gray300,
+                    padding: 12,
+                  }
+                ]}>
+                  <Text style={[
+                    styles.textXs,
+                    styles.fontBold,
+                    styles.textGray700,
+                    styles.uppercase,
+                    { marginBottom: 4 }
+                  ]}>
+                    POPULAR PROVIDERS
+                  </Text>
+                  <Text style={[
+                    styles.textXs,
+                    styles.fontBold,
+                    styles.textGray600,
+                    { lineHeight: 16 }
+                  ]}>
+                    • Nextcloud/ownCloud{'\n'}
+                    • Mail.ru Cloud{'\n'}
+                    • Yandex.Disk{'\n'}
+                    • Box.com
+                  </Text>
+                </View>
               </View>
             </BrutalCard>
           )}

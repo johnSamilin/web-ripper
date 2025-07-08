@@ -46,7 +46,7 @@ export default function BrutalButton({
 
   const getSizeStyle = () => {
     switch (size) {
-      case 'sm': return { paddingVertical: 8, paddingHorizontal: 8 };
+      case 'sm': return { paddingVertical: 8, paddingHorizontal: 12 };
       case 'lg': return { paddingVertical: 20, paddingHorizontal: 32 };
       default: return {};
     }
@@ -77,11 +77,7 @@ export default function BrutalButton({
           styles.textBase,
           styles.fontBlack,
           styles.uppercase,
-          { 
-            color: isDisabled ? colors.white : getTextColor(), 
-            letterSpacing: size === 'sm' ? 1 : 2,
-            fontSize: size === 'sm' ? 12 : 16
-          },
+          { color: isDisabled ? colors.white : getTextColor(), letterSpacing: 2 },
           textStyle
         ]}>
           {typeof children === 'string' ? children : children}

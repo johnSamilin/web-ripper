@@ -74,51 +74,39 @@ const AuthScreen = observer(({ onBack }: AuthScreenProps) => {
   const renderHeader = () => (
     <View style={[styles.p4]}>
       <View style={[styles.row, styles.spaceBetween, styles.alignCenter]}>
-      <View style={[styles.row, styles.alignCenter, { gap: 16 }]}>
-        <View style={[
-          {
-            width: 64,
-            height: 64,
-            backgroundColor: colors.black,
-            borderWidth: 4,
-            borderColor: colors.red500,
-            transform: [{ rotate: '12deg' }],
-          },
-          styles.center
-        ]}>
-          <Ionicons name="shield" size={32} color={colors.red500} />
-        </View>
-        <View>
-          <Text style={[
-            styles.text3xl,
-            styles.fontBlack,
-            styles.textBlack,
-            styles.uppercase,
-            { letterSpacing: 2, transform: [{ skewX: '-5deg' }] }
+        <View style={[styles.row, styles.alignCenter, { gap: 12 }]}>
+          <View style={[
+            {
+              width: 48,
+              height: 48,
+              backgroundColor: colors.black,
+              borderWidth: 3,
+              borderColor: colors.red500,
+              transform: [{ rotate: '12deg' }],
+            },
+            styles.center
           ]}>
-            WEB RIPPER
-          </Text>
+            <Ionicons name="shield" size={24} color={colors.red500} />
+          </View>
           <Text style={[
-            styles.textSm,
-            styles.fontBold,
+            styles.textXl,
+            styles.fontBlack,
             styles.textRed600,
             styles.uppercase,
-            { letterSpacing: 3 }
+            { letterSpacing: 2 }
           ]}>
             SECURE ACCESS
           </Text>
         </View>
-      </View>
       
-      <BrutalButton
-        onPress={onBack}
-        variant="secondary"
-        size="sm"
-        icon={<Ionicons name="close" size={20} color={colors.black} />}
-        style={{ minWidth: 60 }}
-      >
-        ✕
-      </BrutalButton>
+        <BrutalButton
+          onPress={onBack}
+          variant="secondary"
+          size="sm"
+          icon={<Ionicons name="close" size={18} color={colors.black} />}
+        >
+          CLOSE
+        </BrutalButton>
       </View>
     </View>
   );
