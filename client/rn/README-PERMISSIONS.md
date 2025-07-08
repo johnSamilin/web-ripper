@@ -13,7 +13,8 @@ The following permissions are automatically added to `app.json`:
   "android.permission.INTERNET",
   "android.permission.ACCESS_NETWORK_STATE", 
   "android.permission.ACCESS_WIFI_STATE"
-]
+],
+"usesCleartextTraffic": true
 ```
 
 #### **What each permission does:**
@@ -21,6 +22,7 @@ The following permissions are automatically added to `app.json`:
 - **`INTERNET`**: Required for making HTTP requests to the backend server
 - **`ACCESS_NETWORK_STATE`**: Allows checking if device has internet connection
 - **`ACCESS_WIFI_STATE`**: Allows checking WiFi connection status
+- **`usesCleartextTraffic`**: Allows HTTP (non-HTTPS) connections to development server
 
 ### **iOS Permissions**
 

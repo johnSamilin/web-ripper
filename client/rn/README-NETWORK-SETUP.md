@@ -148,6 +148,26 @@ Then open: `http://localhost:19006`
 
 **Note**: Web preview uses the same backend URL as the main web app (`http://localhost:3001`)
 
+### **Android Permissions**
+
+The following permissions are automatically added to `app.json`:
+
+```json
+"permissions": [
+  "android.permission.INTERNET",
+  "android.permission.ACCESS_NETWORK_STATE", 
+  "android.permission.ACCESS_WIFI_STATE"
+],
+"usesCleartextTraffic": true
+```
+
+#### **What each permission does:**
+
+- **`INTERNET`**: Required for making HTTP requests to the backend server
+- **`ACCESS_NETWORK_STATE`**: Allows checking if device has internet connection
+- **`ACCESS_WIFI_STATE`**: Allows checking WiFi connection status
+- **`usesCleartextTraffic`**: Allows HTTP (non-HTTPS) connections for development
+
 ## 🔧 **Advanced Configuration**
 
 ### **Custom Ports**
