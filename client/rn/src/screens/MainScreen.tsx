@@ -497,7 +497,7 @@ const MainScreen = observer(({
           {
             width: 48,
             height: 48,
-            backgroundColor: isAuthenticated && user?.hasWebDAV ? colors.blue600 : colors.yellow400,
+            backgroundColor: authStore.isAuthenticated && authStore.user?.hasWebDAV ? colors.blue600 : colors.yellow400,
             borderWidth: 2,
             borderColor: colors.black,
             transform: [{ rotate: '12deg' }],
