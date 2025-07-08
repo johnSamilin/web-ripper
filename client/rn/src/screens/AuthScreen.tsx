@@ -72,7 +72,8 @@ const AuthScreen = observer(({ onBack }: AuthScreenProps) => {
   };
 
   const renderHeader = () => (
-    <View style={[styles.row, styles.spaceBetween, styles.alignCenter, styles.p4]}>
+    <View style={[styles.p4]}>
+      <View style={[styles.row, styles.spaceBetween, styles.alignCenter]}>
       <View style={[styles.row, styles.alignCenter, { gap: 16 }]}>
         <View style={[
           {
@@ -114,9 +115,11 @@ const AuthScreen = observer(({ onBack }: AuthScreenProps) => {
         variant="secondary"
         size="sm"
         icon={<Ionicons name="close" size={20} color={colors.black} />}
+        style={{ minWidth: 60 }}
       >
-        CLOSE
+        ✕
       </BrutalButton>
+      </View>
     </View>
   );
 

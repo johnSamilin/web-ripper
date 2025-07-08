@@ -93,7 +93,8 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
   };
 
   const renderHeader = () => (
-    <View style={[styles.row, styles.spaceBetween, styles.alignCenter, styles.p4]}>
+    <View style={[styles.p4]}>
+      <View style={[styles.row, styles.spaceBetween, styles.alignCenter]}>
       <View style={[styles.row, styles.alignCenter, { gap: 16 }]}>
         <Text style={[
           styles.text2xl,
@@ -111,9 +112,11 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
         variant="secondary"
         size="sm"
         icon={<Ionicons name="arrow-back" size={20} color={colors.black} />}
+        style={{ minWidth: 60 }}
       >
-        BACK
+        ←
       </BrutalButton>
+      </View>
     </View>
   );
 

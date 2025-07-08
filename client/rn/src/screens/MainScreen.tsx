@@ -94,7 +94,8 @@ const MainScreen = observer(({
   };
 
   const renderHeader = () => (
-    <View style={[styles.row, styles.spaceBetween, styles.alignCenter, styles.p4]}>
+    <View style={[styles.p4]}>
+      <View style={[styles.row, styles.spaceBetween, styles.alignCenter]}>
       <View style={[styles.row, styles.alignCenter, { gap: 16 }]}>
         <View style={[
           {
@@ -143,22 +144,24 @@ const MainScreen = observer(({
         </View>
       </View>
       
-      <View style={[styles.row, { gap: 8 }]}>
+      <View style={[styles.row, { gap: 4, flexShrink: 1 }]}>
         <BrutalButton
           onPress={onShowSettings}
           variant="secondary"
           size="sm"
           icon={<Ionicons name="settings" size={20} color={colors.black} />}
+          style={{ minWidth: 60 }}
         >
-          SETTINGS
+          SET
         </BrutalButton>
         <BrutalButton
           onPress={onShowLogs}
           variant="secondary"
           size="sm"
           icon={<Ionicons name="terminal" size={20} color={colors.black} />}
+          style={{ minWidth: 60 }}
         >
-          LOGS
+          LOG
         </BrutalButton>
         {!authStore.isAuthenticated && (
           <BrutalButton
@@ -166,10 +169,12 @@ const MainScreen = observer(({
             variant="primary"
             size="sm"
             icon={<Ionicons name="person-add" size={20} color={colors.white} />}
+            style={{ minWidth: 60 }}
           >
-            LOGIN
+            LOG
           </BrutalButton>
         )}
+      </View>
       </View>
     </View>
   );
