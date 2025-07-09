@@ -1,47 +1,27 @@
 <svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="192" height="192" fill="#f3f4f6"/>
+  <!-- Background circle for maskable icon -->
+  <circle cx="96" cy="96" r="96" fill="#000000"/>
   
-  <!-- Main border -->
-  <rect x="12" y="12" width="168" height="168" fill="#000000" stroke="#ef4444" stroke-width="3"/>
+  <!-- Main target/crosshair design -->
+  <circle cx="96" cy="96" r="60" fill="none" stroke="#ef4444" stroke-width="6"/>
+  <circle cx="96" cy="96" r="30" fill="none" stroke="#facc15" stroke-width="4"/>
+  <circle cx="96" cy="96" r="12" fill="#ef4444"/>
   
-  <!-- Inner background -->
-  <rect x="18" y="18" width="156" height="156" fill="#ffffff"/>
+  <!-- Crosshair lines -->
+  <line x1="96" y1="20" x2="96" y2="40" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+  <line x1="96" y1="152" x2="96" y2="172" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+  <line x1="20" y1="96" x2="40" y2="96" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+  <line x1="152" y1="96" x2="172" y2="96" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
   
-  <!-- Target crosshairs -->
-  <g stroke="#ef4444" stroke-width="4" fill="none">
-    <!-- Outer circle -->
-    <circle cx="96" cy="96" r="60"/>
-    <!-- Inner circle -->
-    <circle cx="96" cy="96" r="30"/>
-    <!-- Crosshair lines -->
-    <line x1="96" y1="24" x2="96" y2="48"/>
-    <line x1="96" y1="144" x2="96" y2="168"/>
-    <line x1="24" y1="96" x2="48" y2="96"/>
-    <line x1="144" y1="96" x2="168" y2="96"/>
-    <!-- Diagonal lines -->
-    <line x1="53" y1="53" x2="69" y2="69"/>
-    <line x1="123" y1="123" x2="139" y2="139"/>
-    <line x1="139" y1="53" x2="123" y2="69"/>
-    <line x1="69" y1="123" x2="53" y2="139"/>
-  </g>
+  <!-- Diagonal lines -->
+  <line x1="35" y1="35" x2="50" y2="50" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+  <line x1="142" y1="142" x2="157" y2="157" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+  <line x1="157" y1="35" x2="142" y2="50" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+  <line x1="50" y1="142" x2="35" y2="157" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
   
-  <!-- Center dot -->
-  <circle cx="96" cy="96" r="6" fill="#ef4444"/>
-  
-  <!-- Brutal text effect -->
-  <g fill="#000000" font-family="Arial Black, sans-serif" font-weight="900" font-size="12" text-anchor="middle">
-    <!-- Shadow text -->
-    <text x="97" y="128" fill="#666666">WEB</text>
-    <text x="97" y="143" fill="#666666">RIPPER</text>
-    <!-- Main text -->
-    <text x="96" y="127" fill="#000000">WEB</text>
-    <text x="96" y="142" fill="#000000">RIPPER</text>
-  </g>
-  
-  <!-- Corner decorations -->
-  <rect x="30" y="30" width="9" height="9" fill="#facc15" transform="rotate(45 34.5 34.5)"/>
-  <rect x="153" y="30" width="9" height="9" fill="#facc15" transform="rotate(45 157.5 34.5)"/>
-  <rect x="30" y="153" width="9" height="9" fill="#facc15" transform="rotate(45 34.5 157.5)"/>
-  <rect x="153" y="153" width="9" height="9" fill="#facc15" transform="rotate(45 157.5 157.5)"/>
+  <!-- Corner brackets for "targeting" effect -->
+  <path d="M30 60 L30 30 L60 30" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M132 30 L162 30 L162 60" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M162 132 L162 162 L132 162" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60 162 L30 162 L30 132" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

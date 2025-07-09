@@ -1,55 +1,31 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="512" height="512" fill="#f3f4f6"/>
+  <!-- Background circle for maskable icon -->
+  <circle cx="256" cy="256" r="256" fill="#000000"/>
   
-  <!-- Main border -->
-  <rect x="32" y="32" width="448" height="448" fill="#000000" stroke="#ef4444" stroke-width="8"/>
+  <!-- Main target/crosshair design -->
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#ef4444" stroke-width="16"/>
+  <circle cx="256" cy="256" r="80" fill="none" stroke="#facc15" stroke-width="12"/>
+  <circle cx="256" cy="256" r="32" fill="#ef4444"/>
   
-  <!-- Inner background -->
-  <rect x="48" y="48" width="416" height="416" fill="#ffffff"/>
+  <!-- Crosshair lines -->
+  <line x1="256" y1="50" x2="256" y2="110" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
+  <line x1="256" y1="402" x2="256" y2="462" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
+  <line x1="50" y1="256" x2="110" y2="256" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
+  <line x1="402" y1="256" x2="462" y2="256" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
   
-  <!-- Target crosshairs -->
-  <g stroke="#ef4444" stroke-width="12" fill="none">
-    <!-- Outer circle -->
-    <circle cx="256" cy="256" r="160"/>
-    <!-- Middle circle -->
-    <circle cx="256" cy="256" r="120"/>
-    <!-- Inner circle -->
-    <circle cx="256" cy="256" r="80"/>
-    <!-- Crosshair lines -->
-    <line x1="256" y1="64" x2="256" y2="128"/>
-    <line x1="256" y1="384" x2="256" y2="448"/>
-    <line x1="64" y1="256" x2="128" y2="256"/>
-    <line x1="384" y1="256" x2="448" y2="256"/>
-    <!-- Diagonal lines -->
-    <line x1="142" y1="142" x2="184" y2="184"/>
-    <line x1="328" y1="328" x2="370" y2="370"/>
-    <line x1="370" y1="142" x2="328" y2="184"/>
-    <line x1="184" y1="328" x2="142" y2="370"/>
-  </g>
+  <!-- Diagonal lines -->
+  <line x1="92" y1="92" x2="134" y2="134" stroke="#facc15" stroke-width="8" stroke-linecap="round"/>
+  <line x1="378" y1="378" x2="420" y2="420" stroke="#facc15" stroke-width="8" stroke-linecap="round"/>
+  <line x1="420" y1="92" x2="378" y2="134" stroke="#facc15" stroke-width="8" stroke-linecap="round"/>
+  <line x1="134" y1="378" x2="92" y2="420" stroke="#facc15" stroke-width="8" stroke-linecap="round"/>
   
-  <!-- Center dot -->
-  <circle cx="256" cy="256" r="20" fill="#ef4444"/>
+  <!-- Corner brackets for "targeting" effect -->
+  <path d="M80 160 L80 80 L160 80" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M352 80 L432 80 L432 160" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M432 352 L432 432 L352 432" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M160 432 L80 432 L80 352" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
   
-  <!-- Brutal text effect -->
-  <g fill="#000000" font-family="Arial Black, sans-serif" font-weight="900" font-size="36" text-anchor="middle">
-    <!-- Shadow text -->
-    <text x="258" y="340" fill="#666666">WEB</text>
-    <text x="258" y="385" fill="#666666">RIPPER</text>
-    <!-- Main text -->
-    <text x="256" y="338" fill="#000000">WEB</text>
-    <text x="256" y="383" fill="#000000">RIPPER</text>
-  </g>
-  
-  <!-- Corner decorations -->
-  <rect x="80" y="80" width="32" height="32" fill="#facc15" transform="rotate(45 96 96)"/>
-  <rect x="400" y="80" width="32" height="32" fill="#facc15" transform="rotate(45 416 96)"/>
-  <rect x="80" y="400" width="32" height="32" fill="#facc15" transform="rotate(45 96 416)"/>
-  <rect x="400" y="400" width="32" height="32" fill="#facc15" transform="rotate(45 416 416)"/>
-  
-  <!-- Additional brutal elements -->
-  <rect x="120" y="120" width="16" height="16" fill="#000000" transform="rotate(12 128 128)"/>
-  <rect x="376" y="120" width="16" height="16" fill="#000000" transform="rotate(-12 384 128)"/>
-  <rect x="120" y="376" width="16" height="16" fill="#000000" transform="rotate(-12 128 384)"/>
-  <rect x="376" y="376" width="16" height="16" fill="#000000" transform="rotate(12 384 384)"/>
+  <!-- Additional detail rings -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.3"/>
+  <circle cx="256" cy="256" r="120" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.3"/>
 </svg>
