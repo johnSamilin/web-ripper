@@ -773,17 +773,63 @@ if (useHTTP2) {
     process.exit(1);
   }
   
+  // Validate certificate before starting server
+  try {
+    const key = fs.readFileSync(keyPath);
+    const cert = fs.readFileSync(certFilePath);
+    
+    if (key.length === 0 || cert.length === 0) {
+      throw new Error('Certificate or key file is empty');
+    }
+    
+    console.log('🔍 SSL certificate validation passed');
+  } catch (error) {
+    console.error('❌ SSL certificate validation failed:', error.message);
+    console.error('   Try regenerating certificates: npm run generate-cert');
+    process.exit(1);
+  }
+  
   const options = {
     key: fs.readFileSync(keyPath),
     cert: fs.readFileSync(certFilePath),
-    allowHTTP1: true // Allow HTTP/1.1 fallback
+    allowHTTP1: true, // Allow HTTP/1.1 fallback
+    // Additional HTTP/2 security options
+    secureProtocol: 'TLSv1_2_method',
+    honorCipherOrder: true,
+    ciphers: [
+      'ECDHE-RSA-AES128-GCM-SHA256',
+      'ECDHE-RSA-AES256-GCM-SHA384',
+      'ECDHE-RSA-AES128-SHA256',
+      'ECDHE-RSA-AES256-SHA384'
+    ].join(':')
   };
   
   const server = http2.createSecureServer(options, app);
   
+  // Handle HTTP/2 specific errors
+  server.on('error', (error) => {
+    if (error.code === 'ERR_SSL_KEY_USAGE_INCOMPATIBLE') {
+      console.error('❌ SSL Key Usage Error: Certificate not compatible with HTTP/2');
+      console.error('   Solution: Regenerate certificate with: npm run generate-cert');
+      console.error('   The new certificate will have HTTP/2 compatible extensions');
+    } else {
+      console.error('❌ Server error:', error.message);
+    }
+    process.exit(1);
+  });
+  
+  server.on('secureConnection', (tlsSocket) => {
+    console.log('🔐 Secure connection established:', {
+      protocol: tlsSocket.getProtocol(),
+      cipher: tlsSocket.getCipher()?.name,
+      alpnProtocol: tlsSocket.alpnProtocol
+    });
+  });
+  
   server.listen(port, () => {
     console.log(`🚀 Brutal Web Ripper server running at https://localhost:${port}`);
     console.log(`🔐 Protocol: HTTP/2 with TLS`);
+    console.log(`🔒 TLS Version: TLSv1.2+`);
     console.log(`🔐 Authentication optional - supports anonymous and authenticated users`);
     console.log(`☁️  WebDAV integration available for authenticated users`);
     console.log(`🤖 AI tagging ${process.env.OPENAI_API_KEY ? 'enabled' : 'disabled (using fallback)'}`);
@@ -795,6 +841,8 @@ if (useHTTP2) {
     console.log(`🚫 Source ignore list available for cleaner analysis`);
     console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`📁 Static files: ${fs.existsSync(distPath) ? 'Serving from dist/' : 'Not built - run npm run build'}`);
+    console.log(`\n⚠️  Browser will show security warning for self-signed certificate`);
+    console.log(`   Click "Advanced" → "Proceed to localhost" to continue`);
   });
 } else {
   // HTTP/1.1
