@@ -94,7 +94,11 @@ export default function BrutalInput({
               fontWeight: '700',
               color: colors.black,
               fontFamily: styles.textBase.fontFamily,
-              ...(Platform.OS === 'web' && { outline: 'none' }),
+              ...(Platform.OS === 'web' && { 
+                outline: 'none',
+                border: 'none',
+                background: 'transparent'
+              }),
             },
             inputStyle
           ]}

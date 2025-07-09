@@ -55,7 +55,7 @@ const SettingsScreen = observer(({ onBack }: SettingsScreenProps) => {
         loadAnalytics();
       }
     }
-  }, [authStore.isAuthenticated, authStore.user?.hasWebDAV]);
+  }, [authStore.isAuthenticated]);
 
   const loadWebDAVSettings = async () => {
     try {

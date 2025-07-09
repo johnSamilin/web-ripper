@@ -94,7 +94,10 @@ export class AuthStore {
       }
     } catch (error) {
       this.rootStore.logStore.error('Auth check failed:', error);
-      await this.logout();
+      // Don't auto-logout on network errors for web version
+      if (error.message && !error.message.includes('fetch')) {
+        await this.logout();
+      }
     }
   }
 

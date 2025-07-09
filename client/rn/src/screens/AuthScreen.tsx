@@ -55,6 +55,10 @@ const AuthScreen = observer(({ onBack }: AuthScreenProps) => {
       } else {
         await authStore.register(username.trim(), email.trim(), password, settingsStore.settings.backendUrl);
       }
+      // Clear form after successful auth
+      setUsername('');
+      setEmail('');
+      setPassword('');
       onBack();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed');

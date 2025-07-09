@@ -10,6 +10,10 @@ export class RootStore {
   logStore: LogStore;
   extractionStore: ExtractionStore;
 
+  // Global app state
+  currentScreen: 'main' | 'settings' | 'auth' = 'main';
+  showLogDrawer = false;
+  sharedUrl = '';
   constructor() {
     makeAutoObservable(this);
     
@@ -18,11 +22,6 @@ export class RootStore {
     this.logStore = new LogStore(this);
     this.extractionStore = new ExtractionStore(this);
   }
-
-  // Global app state
-  currentScreen: 'main' | 'settings' | 'auth' = 'main';
-  showLogDrawer = false;
-  sharedUrl = '';
 
   setCurrentScreen(screen: 'main' | 'settings' | 'auth') {
     this.currentScreen = screen;

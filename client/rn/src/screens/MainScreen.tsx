@@ -36,13 +36,13 @@ const MainScreen = observer(({
       extractionStore.setUrl(initialUrl);
       onUrlProcessed?.();
     }
-  }, [initialUrl]);
+  }, [initialUrl, onUrlProcessed]);
 
   useEffect(() => {
     if (authStore.isAuthenticated && settingsStore.settings.backendUrl) {
       authStore.checkAuth(settingsStore.settings.backendUrl);
     }
-  }, [settingsStore.settings.backendUrl, authStore.isAuthenticated]);
+  }, [settingsStore.settings.backendUrl]);
 
   const handlePasteFromClipboard = async () => {
     try {
