@@ -5,6 +5,7 @@ import BrutalInput from './BrutalInput';
 import BrutalButton from './BrutalButton';
 import AlertMessage from './AlertMessage';
 import TagInput from './TagInput';
+import { useSharedUrl } from '../hooks/useSharedUrl';
 
 interface ExtractionFormProps {
   onSubmit: (url: string, tags: string[]) => void;
@@ -25,6 +26,15 @@ const ExtractionForm: React.FC<ExtractionFormProps> = ({
   const [tags, setTags] = useState<string[]>([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  
+  const { sharedUrl } = useSharedUrl();
+
+  // Auto-fill URL from shared content
+  React.useEffect(() => {
+    if (sharedUrl && !url) {
+      setUrl(sharedUrl);
+    }
+  }, [sharedUrl, url]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,10 +87,15 @@ const ExtractionForm: React.FC<ExtractionFormProps> = ({
             type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://victim-site.com/article"
+            placeholder={sharedUrl ? "Shared URL loaded..." : "https://victim-site.com/article"}
             disabled={loading}
             icon={<Crosshair />}
           />
+          {sharedUrl && (
+            <p className="text-xs font-bold text-green-600 mt-1 uppercase">
+              ✓ URL shared from another app
+            </p>
+          )}
         </div>
 
         {isAuthenticated && hasWebDAV && (

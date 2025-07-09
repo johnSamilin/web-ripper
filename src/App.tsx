@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Shield } from 'lucide-react';
 
+import { useServiceWorker } from './hooks/useServiceWorker';
+import { useSharedUrl } from './hooks/useSharedUrl';
 import Header from './components/Header';
 import BackgroundElements from './components/BackgroundElements';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -13,6 +15,7 @@ import BrutalCard from './components/BrutalCard';
 import PocketImport from './components/PocketImport';
 import SourceAnalysis from './components/SourceAnalysis';
 import LandingPage from './components/LandingPage';
+import OfflineIndicator from './components/OfflineIndicator';
 
 interface ExtractResult {
   success: boolean;
@@ -64,6 +67,10 @@ function App() {
   const [result, setResult] = useState<ExtractResult | null>(null);
   const [error, setError] = useState('');
   
+  // Service Worker and sharing hooks
+  const { isOnline, addToOfflineQueue, showNotification } = useServiceWorker();
+  const { sharedUrl, clearSharedUrl } = useSharedUrl();
+  
   // App state
   const [showLanding, setShowLanding] = useState(true);
   
@@ -95,6 +102,24 @@ function App() {
   useEffect(() => {
     checkAuth();
   }, []);
+
+  // Handle shared URLs
+  useEffect(() => {
+    if (sharedUrl && !showLanding) {
+      console.log('🔗 Processing shared URL:', sharedUrl);
+      // Auto-fill the extraction form with shared URL
+      setShowLanding(false);
+      setShowAuth(false);
+      setShowSettings(false);
+      setShowPocketImport(false);
+      setShowSourceAnalysis(false);
+      
+      // You can auto-trigger extraction here if desired
+      // handleSubmit(sharedUrl, []);
+      
+      clearSharedUrl();
+    }
+  }, [sharedUrl, showLanding]);
 
   const checkAuth = async () => {
     try {
@@ -242,6 +267,20 @@ function App() {
     setError('');
     setResult(null);
 
+    // If offline, add to queue
+    if (!isOnline) {
+      try {
+        await addToOfflineQueue(url, tags);
+        setError('You are offline. The extraction has been queued and will be processed when you reconnect.');
+        return;
+      } catch (err) {
+        setError('Failed to queue extraction for offline processing');
+        return;
+      } finally {
+        setLoading(false);
+      }
+    }
+
     try {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
@@ -265,6 +304,18 @@ function App() {
       }
 
       setResult(data);
+      
+      // Show success notification
+      if ('Notification' in window) {
+        try {
+          await showNotification('Web Ripper', {
+            body: `Successfully extracted: ${data.title}`,
+            tag: 'extraction-success'
+          });
+        } catch (notifError) {
+          console.warn('Failed to show notification:', notifError);
+        }
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -485,6 +536,8 @@ function App() {
           )}
         </div>
       </div>
+      
+      <OfflineIndicator />
     </div>
   );
 }
