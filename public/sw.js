@@ -4,7 +4,13 @@ const STATIC_CACHE_URLS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/vite.svg',
+  '/icon.svg',
+  '/icon-192.svg',
+  '/icon-512.svg',
+  '/badge.svg',
+  '/notification-icon.svg',
+  '/share-icon.svg',
+  '/offline-icon.svg',
   // Add other static assets as needed
 ];
 
@@ -113,8 +119,8 @@ self.addEventListener('message', (event) => {
     // Store shared data for the app to retrieve
     self.registration.showNotification('Web Ripper', {
       body: `Shared URL: ${url || title || text}`,
-      icon: '/vite.svg',
-      badge: '/vite.svg',
+      icon: '/notification-icon.svg',
+      badge: '/badge.svg',
       tag: 'share-target',
       data: { url, title, text },
       actions: [
@@ -199,7 +205,8 @@ async function handleOfflineExtractions() {
           // Notify user of successful extraction
           self.registration.showNotification('Web Ripper', {
             body: `Successfully extracted: ${extraction.url}`,
-            icon: '/vite.svg',
+            icon: '/notification-icon.svg',
+            badge: '/badge.svg',
             tag: 'extraction-success'
           });
         }
@@ -234,8 +241,8 @@ self.addEventListener('push', (event) => {
     event.waitUntil(
       self.registration.showNotification(data.title || 'Web Ripper', {
         body: data.body,
-        icon: data.icon || '/vite.svg',
-        badge: '/vite.svg',
+        icon: data.icon || '/notification-icon.svg',
+        badge: '/badge.svg',
         data: data.data
       })
     );

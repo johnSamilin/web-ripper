@@ -1,0 +1,30 @@
+<svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="72" height="72" fill="#000000"/>
+  
+  <!-- Border -->
+  <rect x="4" y="4" width="64" height="64" fill="#ef4444" stroke="#facc15" stroke-width="2"/>
+  
+  <!-- Inner background -->
+  <rect x="8" y="8" width="56" height="56" fill="#ffffff"/>
+  
+  <!-- Target symbol -->
+  <g stroke="#ef4444" stroke-width="3" fill="none">
+    <circle cx="36" cy="36" r="20"/>
+    <circle cx="36" cy="36" r="12"/>
+    <!-- Crosshairs -->
+    <line x1="36" y1="12" x2="36" y2="20"/>
+    <line x1="36" y1="52" x2="36" y2="60"/>
+    <line x1="12" y1="36" x2="20" y2="36"/>
+    <line x1="52" y1="36" x2="60" y2="36"/>
+  </g>
+  
+  <!-- Center dot -->
+  <circle cx="36" cy="36" r="4" fill="#ef4444"/>
+  
+  <!-- Corner accents -->
+  <rect x="16" y="16" width="6" height="6" fill="#facc15" transform="rotate(45 19 19)"/>
+  <rect x="50" y="16" width="6" height="6" fill="#facc15" transform="rotate(45 53 19)"/>
+  <rect x="16" y="50" width="6" height="6" fill="#facc15" transform="rotate(45 19 53)"/>
+  <rect x="50" y="50" width="6" height="6" fill="#facc15" transform="rotate(45 53 53)"/>
+</svg>

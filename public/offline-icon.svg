@@ -1,0 +1,19 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="48" height="48" fill="#6b7280"/>
+  
+  <!-- WiFi symbol (crossed out) -->
+  <g stroke="#ffffff" stroke-width="2" fill="none">
+    <!-- WiFi arcs -->
+    <path d="M8 30c8-8 24-8 32 0"/>
+    <path d="M12 34c6-6 18-6 24 0"/>
+    <path d="M16 38c4-4 12-4 16 0"/>
+    <!-- Center dot -->
+    <circle cx="24" cy="42" r="2" fill="#ffffff"/>
+    <!-- Cross out line -->
+    <line x1="8" y1="8" x2="40" y2="40" stroke="#ef4444" stroke-width="3"/>
+  </g>
+  
+  <!-- Border -->
+  <rect x="2" y="2" width="44" height="44" fill="none" stroke="#000000" stroke-width="2"/>
+</svg>

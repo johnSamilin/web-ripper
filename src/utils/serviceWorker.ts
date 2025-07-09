@@ -186,8 +186,8 @@ class ServiceWorkerManager {
     }
 
     await this.registration.showNotification(title, {
-      icon: '/vite.svg',
-      badge: '/vite.svg',
+      icon: '/notification-icon.svg',
+      badge: '/badge.svg',
       ...options
     });
   }
