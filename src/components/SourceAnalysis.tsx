@@ -60,7 +60,7 @@ const SourceAnalysis: React.FC<SourceAnalysisProps> = ({ onClose, isAuthenticate
         throw new Error('Authentication required');
       }
 
-      const response = await fetch('http://localhost:3001/api/analyze/sources', {
+      const response = await fetch('/api/analyze/sources', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -85,7 +85,7 @@ const SourceAnalysis: React.FC<SourceAnalysisProps> = ({ onClose, isAuthenticate
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch('http://localhost:3001/api/sources/ignore-list', {
+      const response = await fetch('/api/sources/ignore-list', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -108,7 +108,7 @@ const SourceAnalysis: React.FC<SourceAnalysisProps> = ({ onClose, isAuthenticate
       const isCurrentlyIgnored = ignoredSources.includes(domain);
       const action = isCurrentlyIgnored ? 'remove' : 'add';
 
-      const response = await fetch('http://localhost:3001/api/sources/ignore', {
+      const response = await fetch('/api/sources/ignore', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -137,7 +137,7 @@ const SourceAnalysis: React.FC<SourceAnalysisProps> = ({ onClose, isAuthenticate
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch('http://localhost:3001/api/sources/ignore-list', {
+      const response = await fetch('/api/sources/ignore-list', {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -169,7 +169,7 @@ const SourceAnalysis: React.FC<SourceAnalysisProps> = ({ onClose, isAuthenticate
       // Mark all sources as analyzing
       setSources(prev => prev.map(source => ({ ...source, status: 'analyzing' as const })));
 
-      const response = await fetch('http://localhost:3001/api/analyze/sources/feeds', {
+      const response = await fetch('/api/analyze/sources/feeds', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -204,7 +204,7 @@ const SourceAnalysis: React.FC<SourceAnalysisProps> = ({ onClose, isAuthenticate
         throw new Error('Authentication required');
       }
 
-      const response = await fetch(`http://localhost:3001/api/analyze/sources/feeds/${encodeURIComponent(domain)}`, {
+      const response = await fetch(`/api/analyze/sources/feeds/${encodeURIComponent(domain)}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

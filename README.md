@@ -187,7 +187,7 @@ Set `ORGANIZE_BY_DATE=true` to organize files by year/month:
 
 #### Health Check
 ```bash
-curl http://localhost:3001/api/health
+curl /api/health
 ```
 
 #### Database Backup
@@ -235,7 +235,7 @@ MAX_CONTENT_LENGTH=50mb
 
 ### Anonymous Mode
 ```bash
-curl -X POST http://localhost:3001/api/extract \
+curl -X POST /api/extract \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com/article"}'
 ```
@@ -243,12 +243,12 @@ curl -X POST http://localhost:3001/api/extract \
 ### With Authentication
 ```bash
 # Register
-curl -X POST http://localhost:3001/api/auth/register \
+curl -X POST /api/auth/register \
   -H "Content-Type: application/json" \
   -d '{"username": "user", "email": "user@example.com", "password": "password"}'
 
 # Extract with tags
-curl -X POST http://localhost:3001/api/extract \
+curl -X POST /api/extract \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -d '{"url": "https://example.com/article", "tags": ["research", "ai"]}'

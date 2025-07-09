@@ -45,7 +45,7 @@ const ExtractionForm: React.FC<ExtractionFormProps> = ({
 
   const handleSuggestTags = async (title: string, description: string, url: string): Promise<string[]> => {
     try {
-      const response = await fetch('http://localhost:3001/api/suggest-tags', {
+      const response = await fetch('/api/suggest-tags', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

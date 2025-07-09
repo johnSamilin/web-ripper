@@ -226,7 +226,7 @@ const PocketImport: React.FC<PocketImportProps> = ({ onClose, isAuthenticated, h
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch('http://localhost:3001/api/extract', {
+      const response = await fetch('/api/extract', {
         method: 'POST',
         headers,
         body: JSON.stringify({ 

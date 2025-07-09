@@ -129,7 +129,7 @@ function App() {
         return;
       }
 
-      const response = await fetch('http://localhost:3001/api/auth/me', {
+      const response = await fetch('/api/auth/me', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -156,7 +156,7 @@ function App() {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await fetch('http://localhost:3001/api/settings/webdav', {
+      const response = await fetch('/api/settings/webdav', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -231,7 +231,7 @@ function App() {
         return;
       }
 
-      const response = await fetch('http://localhost:3001/api/settings/webdav', {
+      const response = await fetch('/api/settings/webdav', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -291,7 +291,7 @@ function App() {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch('http://localhost:3001/api/extract', {
+      const response = await fetch('/api/extract', {
         method: 'POST',
         headers,
         body: JSON.stringify({ url, tags }),

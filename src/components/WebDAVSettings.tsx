@@ -68,7 +68,7 @@ const WebDAVSettings: React.FC<WebDAVSettingsProps> = ({
 
       console.log('🧹 Starting CSS cleanup request...');
 
-      const response = await fetch('http://localhost:3001/api/cleanup-css', {
+      const response = await fetch('/api/cleanup-css', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
