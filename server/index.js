@@ -1,6 +1,7 @@
 import express from 'express';
 import https from 'https';
 import http2 from 'http2';
+import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import cors from 'cors';
@@ -793,43 +794,98 @@ if (useHTTP2) {
     key: fs.readFileSync(keyPath),
     cert: fs.readFileSync(certFilePath),
     allowHTTP1: true, // Allow HTTP/1.1 fallback
-    // Additional HTTP/2 security options
-    secureProtocol: 'TLSv1_2_method',
-    honorCipherOrder: true,
-    ciphers: [
-      'ECDHE-RSA-AES128-GCM-SHA256',
-      'ECDHE-RSA-AES256-GCM-SHA384',
-      'ECDHE-RSA-AES128-SHA256',
-      'ECDHE-RSA-AES256-SHA384'
-    ].join(':')
+    // HTTP/2 specific settings
+    settings: {
+      enablePush: false, // Disable server push for compatibility
+      maxConcurrentStreams: 100,
+      maxHeaderListSize: 8192,
+      maxFrameSize: 16384,
+      initialWindowSize: 65535
+    }
   };
   
-  const server = http2.createSecureServer(options, app);
+  // Use HTTPS server with HTTP/2 compatibility instead of pure HTTP/2
+  const server = https.createServer(options);
   
-  // Handle HTTP/2 specific errors
+  // Handle server on request event to work with Express
+  server.on('request', app);
+  
+  // Enhanced error handling
   server.on('error', (error) => {
-    if (error.code === 'ERR_SSL_KEY_USAGE_INCOMPATIBLE') {
-      console.error('❌ SSL Key Usage Error: Certificate not compatible with HTTP/2');
-      console.error('   Solution: Regenerate certificate with: npm run generate-cert');
-      console.error('   The new certificate will have HTTP/2 compatible extensions');
-    } else {
-      console.error('❌ Server error:', error.message);
+    console.error('❌ Server error:', error.message);
+    console.error('Error code:', error.code);
+    
+    switch (error.code) {
+      case 'ERR_SSL_KEY_USAGE_INCOMPATIBLE':
+        console.error('   Solution: Regenerate certificate with: npm run generate-cert');
+        break;
+      case 'EADDRINUSE':
+        console.error(`   Port ${port} is already in use. Try a different port.`);
+        break;
+      case 'EACCES':
+        console.error(`   Permission denied. Try running with sudo or use port > 1024.`);
+        break;
+      default:
+        console.error('   Check server configuration and try again.');
     }
-    process.exit(1);
   });
   
+  // Handle client errors gracefully
+  server.on('clientError', (error, socket) => {
+    console.warn('⚠️  Client error:', error.message);
+    if (!socket.destroyed) {
+      socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+    }
+  });
+  
+  // Handle connection events
+  server.on('connection', (socket) => {
+    socket.on('error', (error) => {
+      if (error.code !== 'ECONNRESET' && error.code !== 'EPIPE') {
+        console.warn('⚠️  Socket error:', error.message);
+      }
+    });
+  });
+  
+  // Handle secure connections
   server.on('secureConnection', (tlsSocket) => {
-    console.log('🔐 Secure connection established:', {
+    const connectionInfo = {
       protocol: tlsSocket.getProtocol(),
       cipher: tlsSocket.getCipher()?.name,
-      alpnProtocol: tlsSocket.alpnProtocol
+      alpnProtocol: tlsSocket.alpnProtocol || 'http/1.1'
+    };
+    
+    console.log('🔐 Secure connection:', connectionInfo);
+    
+    // Handle TLS socket errors
+    tlsSocket.on('error', (error) => {
+      if (error.code !== 'ECONNRESET' && error.code !== 'EPIPE') {
+        console.warn('⚠️  TLS socket error:', error.message);
+      }
+    });
+  });
+  
+  // Graceful shutdown handling
+  process.on('SIGTERM', () => {
+    console.log('📴 Received SIGTERM, shutting down gracefully...');
+    server.close(() => {
+      console.log('✅ Server closed');
+      process.exit(0);
+    });
+  });
+  
+  process.on('SIGINT', () => {
+    console.log('\n📴 Received SIGINT, shutting down gracefully...');
+    server.close(() => {
+      console.log('✅ Server closed');
+      process.exit(0);
     });
   });
   
   server.listen(port, () => {
     console.log(`🚀 Brutal Web Ripper server running at https://localhost:${port}`);
-    console.log(`🔐 Protocol: HTTP/2 with TLS`);
-    console.log(`🔒 TLS Version: TLSv1.2+`);
+    console.log(`🔐 Protocol: HTTPS with HTTP/2 support`);
+    console.log(`🔒 TLS: Enabled with fallback to HTTP/1.1`);
     console.log(`🔐 Authentication optional - supports anonymous and authenticated users`);
     console.log(`☁️  WebDAV integration available for authenticated users`);
     console.log(`🤖 AI tagging ${process.env.OPENAI_API_KEY ? 'enabled' : 'disabled (using fallback)'}`);
@@ -846,7 +902,50 @@ if (useHTTP2) {
   });
 } else {
   // HTTP/1.1
-  app.listen(port, () => {
+  const server = http.createServer(app);
+  
+  // Handle server errors
+  server.on('error', (error) => {
+    console.error('❌ Server error:', error.message);
+    
+    switch (error.code) {
+      case 'EADDRINUSE':
+        console.error(`   Port ${port} is already in use. Try a different port.`);
+        break;
+      case 'EACCES':
+        console.error(`   Permission denied. Try running with sudo or use port > 1024.`);
+        break;
+      default:
+        console.error('   Check server configuration and try again.');
+    }
+  });
+  
+  // Handle client errors
+  server.on('clientError', (error, socket) => {
+    console.warn('⚠️  Client error:', error.message);
+    if (!socket.destroyed) {
+      socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+    }
+  });
+  
+  // Graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('📴 Received SIGTERM, shutting down gracefully...');
+    server.close(() => {
+      console.log('✅ Server closed');
+      process.exit(0);
+    });
+  });
+  
+  process.on('SIGINT', () => {
+    console.log('\n📴 Received SIGINT, shutting down gracefully...');
+    server.close(() => {
+      console.log('✅ Server closed');
+      process.exit(0);
+    });
+  });
+  
+  server.listen(port, () => {
     console.log(`🚀 Brutal Web Ripper server running at http://localhost:${port}`);
     console.log(`🔐 Protocol: HTTP/1.1`);
     console.log(`🔐 Authentication optional - supports anonymous and authenticated users`);
