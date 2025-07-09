@@ -1,4 +1,8 @@
 import express from 'express';
+import https from 'https';
+import http2 from 'http2';
+import fs from 'fs';
+import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
@@ -23,15 +27,22 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001;
+const useHTTP2 = process.env.USE_HTTP2 === 'true';
+const certPath = process.env.CERT_PATH || './certs';
 
 // Security middleware
 app.use(helmet({
   crossOriginEmbedderPolicy: false,
-  contentSecurityPolicy: false
+  contentSecurityPolicy: false,
+  hsts: useHTTP2 ? {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  } : false
 }));
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: process.env.CORS_ORIGIN || (useHTTP2 ? 'https://localhost:5173' : 'http://localhost:5173'),
   credentials: true
 }));
 
@@ -39,6 +50,20 @@ app.use(cookieParser());
 app.use(express.json({ 
   limit: process.env.MAX_CONTENT_LENGTH || '10mb' 
 }));
+
+// Serve static files from dist folder
+const distPath = path.join(process.cwd(), 'dist');
+if (fs.existsSync(distPath)) {
+  console.log(`📁 Serving static files from: ${distPath}`);
+  app.use(express.static(distPath, {
+    maxAge: '1d',
+    etag: true,
+    lastModified: true
+  }));
+} else {
+  console.log(`⚠️  Dist folder not found at: ${distPath}`);
+  console.log(`   Run 'npm run build' to generate static files`);
+}
 
 // Rate limiting
 const limiter = rateLimit({
@@ -712,12 +737,84 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
     version: '2.0.0',
-    format: 'HTML with inline images'
+    format: 'HTML with inline images',
+    protocol: useHTTP2 ? 'HTTP/2' : 'HTTP/1.1',
+    static: fs.existsSync(distPath) ? 'Available' : 'Not built'
   });
 });
 
-app.listen(port, () => {
-  console.log(`🚀 Brutal Web Ripper server running at http://localhost:${port}`);
+// Catch-all route for SPA
+app.get('*', (req, res) => {
+  // Skip API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'API endpoint not found' });
+  }
+  
+  const indexPath = path.join(distPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send('App not built. Run npm run build first.');
+  }
+});
+
+// Start server
+if (useHTTP2) {
+  // HTTP/2 with HTTPS
+  const keyPath = path.join(certPath, 'server.key');
+  const certFilePath = path.join(certPath, 'server.crt');
+  
+  if (!fs.existsSync(keyPath) || !fs.existsSync(certFilePath)) {
+    console.error('❌ SSL certificates not found!');
+    console.error(`   Expected files:`);
+    console.error(`   - ${keyPath}`);
+    console.error(`   - ${certFilePath}`);
+    console.error(`   Run: npm run generate-cert`);
+    process.exit(1);
+  }
+  
+  const options = {
+    key: fs.readFileSync(keyPath),
+    cert: fs.readFileSync(certFilePath),
+    allowHTTP1: true // Allow HTTP/1.1 fallback
+  };
+  
+  const server = http2.createSecureServer(options, app);
+  
+  server.listen(port, () => {
+    console.log(`🚀 Brutal Web Ripper server running at https://localhost:${port}`);
+    console.log(`🔐 Protocol: HTTP/2 with TLS`);
+    console.log(`🔐 Authentication optional - supports anonymous and authenticated users`);
+    console.log(`☁️  WebDAV integration available for authenticated users`);
+    console.log(`🤖 AI tagging ${process.env.OPENAI_API_KEY ? 'enabled' : 'disabled (using fallback)'}`);
+    console.log(`📁 Files organized by date: ${process.env.ORGANIZE_BY_DATE === 'true' ? 'enabled' : 'disabled'}`);
+    console.log(`📝 Files will be named after article titles for better organization`);
+    console.log(`📊 Source analysis available for authenticated users with WebDAV`);
+    console.log(`🎨 Format: HTML with inline images for self-contained archiving`);
+    console.log(`🧹 CSS cleanup script available for existing files`);
+    console.log(`🚫 Source ignore list available for cleaner analysis`);
+    console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`📁 Static files: ${fs.existsSync(distPath) ? 'Serving from dist/' : 'Not built - run npm run build'}`);
+  });
+} else {
+  // HTTP/1.1
+  app.listen(port, () => {
+    console.log(`🚀 Brutal Web Ripper server running at http://localhost:${port}`);
+    console.log(`🔐 Protocol: HTTP/1.1`);
+    console.log(`🔐 Authentication optional - supports anonymous and authenticated users`);
+    console.log(`☁️  WebDAV integration available for authenticated users`);
+    console.log(`🤖 AI tagging ${process.env.OPENAI_API_KEY ? 'enabled' : 'disabled (using fallback)'}`);
+    console.log(`📁 Files organized by date: ${process.env.ORGANIZE_BY_DATE === 'true' ? 'enabled' : 'disabled'}`);
+    console.log(`📝 Files will be named after article titles for better organization`);
+    console.log(`📊 Source analysis available for authenticated users with WebDAV`);
+    console.log(`🎨 Format: HTML with inline images for self-contained archiving`);
+    console.log(`🧹 CSS cleanup script available for existing files`);
+    console.log(`🚫 Source ignore list available for cleaner analysis`);
+    console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`📁 Static files: ${fs.existsSync(distPath) ? 'Serving from dist/' : 'Not built - run npm run build'}`);
+    console.log(`💡 To enable HTTP/2: Set USE_HTTP2=true and run npm run generate-cert`);
+  });
+}
   console.log(`🔐 Authentication optional - supports anonymous and authenticated users`);
   console.log(`☁️  WebDAV integration available for authenticated users`);
   console.log(`🤖 AI tagging ${process.env.OPENAI_API_KEY ? 'enabled' : 'disabled (using fallback)'}`);

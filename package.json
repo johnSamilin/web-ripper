@@ -7,7 +7,9 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "client": "vite --port 80 --host",
     "server": "node server/index.js",
+    "server:http2": "USE_HTTP2=true node server/index.js",
     "build": "vite build",
+    "generate-cert": "node scripts/generate-cert.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
