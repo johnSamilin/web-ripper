@@ -815,14 +815,3 @@ if (useHTTP2) {
     console.log(`💡 To enable HTTP/2: Set USE_HTTP2=true and run npm run generate-cert`);
   });
 }
-  console.log(`🔐 Authentication optional - supports anonymous and authenticated users`);
-  console.log(`☁️  WebDAV integration available for authenticated users`);
-  console.log(`🤖 AI tagging ${process.env.OPENAI_API_KEY ? 'enabled' : 'disabled (using fallback)'}`);
-  console.log(`📁 Files organized by date: ${process.env.ORGANIZE_BY_DATE === 'true' ? 'enabled' : 'disabled'}`);
-  console.log(`📝 Files will be named after article titles for better organization`);
-  console.log(`📊 Source analysis available for authenticated users with WebDAV`);
-  console.log(`🎨 Format: HTML with inline images for self-contained archiving`);
-  console.log(`🧹 CSS cleanup script available for existing files`);
-  console.log(`🚫 Source ignore list available for cleaner analysis`);
-  console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
-});
