@@ -181,7 +181,7 @@ function App() {
         ? { username: formData.username, password: formData.password }
         : formData;
 
-      const response = await fetch(`http://localhost:3001${endpoint}`, {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
