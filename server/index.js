@@ -803,6 +803,8 @@ app.post('/api/suggest-tags', optionalAuth, async (req, res) => {
     res.status(500).json({ 
       error: 'Failed to generate tag suggestions',
       details: error.message 
+    }
+    )
     res.status(404).send('Challenge not found');
   }
 });
