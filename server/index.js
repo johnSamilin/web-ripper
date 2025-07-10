@@ -31,6 +31,87 @@ const port = process.env.PORT || 3001;
 const useHTTP2 = process.env.USE_HTTP2 === 'true';
 const certPath = process.env.CERT_PATH || './certs';
 
+// Create separate HTTP server for ACME challenges (Let's Encrypt)
+const httpApp = express();
+const httpPort = 80;
+
+// ACME Challenge route on HTTP server (port 80)
+httpApp.get('/.well-known/acme-challenge/:token', (req, res) => {
+  const token = req.params.token;
+  
+  // Validate token format (basic security check)
+  if (!/^[a-zA-Z0-9_-]+$/.test(token)) {
+    console.log(`❌ Invalid ACME challenge token format: ${token}`);
+    return res.status(400).send('Invalid token format');
+  }
+  
+  const challengePath = path.join(process.cwd(), '.well-known', 'acme-challenge', token);
+  
+  console.log(`🔍 ACME challenge request for token: ${token}`);
+  console.log(`📁 Looking for file: ${challengePath}`);
+  
+  // Check if challenge file exists
+  if (fs.existsSync(challengePath)) {
+    try {
+      const challengeResponse = fs.readFileSync(challengePath, 'utf8');
+      console.log(`✅ ACME challenge file found, serving response over HTTP`);
+      
+      // Set proper headers for ACME challenge
+      res.setHeader('Content-Type', 'text/plain');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.send(challengeResponse);
+    } catch (error) {
+      console.error(`❌ Error reading ACME challenge file: ${error.message}`);
+      res.status(500).send('Error reading challenge file');
+    }
+  } else {
+    console.log(`❌ ACME challenge file not found: ${challengePath}`);
+    res.status(404).send('Challenge not found');
+  }
+});
+
+// Health check for ACME challenges
+httpApp.get('/.well-known/acme-challenge/', (req, res) => {
+  console.log(`🔍 ACME challenge directory access over HTTP`);
+  res.setHeader('Content-Type', 'text/plain');
+  res.send('ACME challenge endpoint ready (HTTP)');
+});
+
+// Redirect all other HTTP traffic to HTTPS (when using HTTPS)
+httpApp.get('*', (req, res) => {
+  if (useHTTP2) {
+    const httpsUrl = `https://${req.get('host').replace(':80', `:${port}`)}${req.url}`;
+    console.log(`🔀 Redirecting HTTP to HTTPS: ${req.url} → ${httpsUrl}`);
+    res.redirect(301, httpsUrl);
+  } else {
+    res.status(404).send('Not found');
+  }
+});
+
+// Start HTTP server for ACME challenges
+const httpServer = http.createServer(httpApp);
+
+httpServer.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.log(`⚠️  Port ${httpPort} (HTTP) is already in use - ACME challenges may not work`);
+    console.log(`   This is normal if another web server is handling port 80`);
+  } else if (error.code === 'EACCES') {
+    console.log(`⚠️  Permission denied for port ${httpPort} - ACME challenges may not work`);
+    console.log(`   Run with sudo or configure your web server to proxy ACME challenges`);
+  } else {
+    console.error('❌ HTTP server error:', error.message);
+  }
+});
+
+// Try to start HTTP server for ACME challenges
+try {
+  httpServer.listen(httpPort, () => {
+    console.log(`🔓 HTTP server running on port ${httpPort} for ACME challenges`);
+  });
+} catch (error) {
+  console.log(`⚠️  Could not start HTTP server on port ${httpPort}: ${error.message}`);
+  console.log(`   ACME challenges will not work unless handled by another web server`);
+}
 // Security middleware
 app.use(helmet({
   crossOriginEmbedderPolicy: false,
@@ -722,48 +803,6 @@ app.post('/api/suggest-tags', optionalAuth, async (req, res) => {
     res.status(500).json({ 
       error: 'Failed to generate tag suggestions',
       details: error.message 
-    });
-  }
-});
-
-// CLEANUP ROUTES
-app.use('/api', cleanupRoutes);
-
-// SOURCE IGNORE LIST ROUTES
-app.use('/api', sourceRoutes);
-
-// Let's Encrypt ACME Challenge route
-// This allows Let's Encrypt to verify domain ownership for certificate issuance
-app.get('/.well-known/acme-challenge/:token', (req, res) => {
-  const token = req.params.token;
-  
-  // Validate token format (basic security check)
-  if (!/^[a-zA-Z0-9_-]+$/.test(token)) {
-    console.log(`❌ Invalid ACME challenge token format: ${token}`);
-    return res.status(400).send('Invalid token format');
-  }
-  
-  const challengePath = path.join(process.cwd(), '.well-known', 'acme-challenge', token);
-  
-  console.log(`🔍 ACME challenge request for token: ${token}`);
-  console.log(`📁 Looking for file: ${challengePath}`);
-  
-  // Check if challenge file exists
-  if (fs.existsSync(challengePath)) {
-    try {
-      const challengeResponse = fs.readFileSync(challengePath, 'utf8');
-      console.log(`✅ ACME challenge file found, serving response`);
-      
-      // Set proper headers for ACME challenge
-      res.setHeader('Content-Type', 'text/plain');
-      res.setHeader('Cache-Control', 'no-cache');
-      res.send(challengeResponse);
-    } catch (error) {
-      console.error(`❌ Error reading ACME challenge file: ${error.message}`);
-      res.status(500).send('Error reading challenge file');
-    }
-  } else {
-    console.log(`❌ ACME challenge file not found: ${challengePath}`);
     res.status(404).send('Challenge not found');
   }
 });
