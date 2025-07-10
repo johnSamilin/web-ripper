@@ -732,6 +732,49 @@ app.use('/api', cleanupRoutes);
 // SOURCE IGNORE LIST ROUTES
 app.use('/api', sourceRoutes);
 
+// Let's Encrypt ACME Challenge route
+// This allows Let's Encrypt to verify domain ownership for certificate issuance
+app.get('/.well-known/acme-challenge/:token', (req, res) => {
+  const token = req.params.token;
+  
+  // Validate token format (basic security check)
+  if (!/^[a-zA-Z0-9_-]+$/.test(token)) {
+    console.log(`❌ Invalid ACME challenge token format: ${token}`);
+    return res.status(400).send('Invalid token format');
+  }
+  
+  const challengePath = path.join(process.cwd(), '.well-known', 'acme-challenge', token);
+  
+  console.log(`🔍 ACME challenge request for token: ${token}`);
+  console.log(`📁 Looking for file: ${challengePath}`);
+  
+  // Check if challenge file exists
+  if (fs.existsSync(challengePath)) {
+    try {
+      const challengeResponse = fs.readFileSync(challengePath, 'utf8');
+      console.log(`✅ ACME challenge file found, serving response`);
+      
+      // Set proper headers for ACME challenge
+      res.setHeader('Content-Type', 'text/plain');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.send(challengeResponse);
+    } catch (error) {
+      console.error(`❌ Error reading ACME challenge file: ${error.message}`);
+      res.status(500).send('Error reading challenge file');
+    }
+  } else {
+    console.log(`❌ ACME challenge file not found: ${challengePath}`);
+    res.status(404).send('Challenge not found');
+  }
+});
+
+// Health check for Let's Encrypt (optional)
+app.get('/.well-known/acme-challenge/', (req, res) => {
+  console.log(`🔍 ACME challenge directory access`);
+  res.setHeader('Content-Type', 'text/plain');
+  res.send('ACME challenge endpoint ready');
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
