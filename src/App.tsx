@@ -439,6 +439,7 @@ function App() {
           onShowPocketImport={() => setShowPocketImport(true)}
           onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
           onShowLanding={() => setShowLanding(true)}
+          onShowExtractionModes={() => setShowExtractionModes(true)}
         />
 
         <div className="container mx-auto px-4 py-8 relative z-10">
@@ -483,6 +484,7 @@ function App() {
           onShowPocketImport={() => setShowPocketImport(true)}
           onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
           onShowLanding={() => setShowLanding(true)}
+          onShowExtractionModes={() => setShowExtractionModes(true)}
         />
 
         <div className="container mx-auto px-4 py-8 relative z-10">
@@ -513,6 +515,7 @@ function App() {
           onShowPocketImport={() => setShowPocketImport(true)}
           onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
           onShowLanding={() => setShowLanding(true)}
+          onShowExtractionModes={() => setShowExtractionModes(true)}
         />
 
         <div className="container mx-auto px-4 py-8 relative z-10">
@@ -541,6 +544,7 @@ function App() {
         onShowPocketImport={() => setShowPocketImport(true)}
         onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
         onShowLanding={() => setShowLanding(true)}
+        onShowExtractionModes={() => setShowExtractionModes(true)}
       />
 
       <div className="container mx-auto px-4 py-8 relative z-10">
