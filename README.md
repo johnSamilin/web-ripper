@@ -104,8 +104,35 @@ Web Ripper is a brutal content extraction tool that destroys ads, removes clutte
    ```
 
 5. **Access the application**
-   - Open your browser to `http://localhost:5173`
+   - Open your browser to `http://localhost:5173` (development)
+   - Or `http://localhost:3001` (production)
    - The API runs on `http://localhost:3001`
+
+### 🔒 HTTPS/HTTP2 Setup (Optional)
+
+For HTTPS with HTTP/2 support:
+
+1. **Generate SSL certificates**
+   ```bash
+   npm run generate-cert
+   ```
+
+2. **Enable HTTPS in environment**
+   ```bash
+   # In .env file
+   USE_HTTP2=true
+   CORS_ORIGIN=https://localhost:5173
+   ```
+
+3. **Start with HTTPS**
+   ```bash
+   npm run server:http2
+   ```
+
+4. **Access via HTTPS**
+   - Open `https://localhost:3001`
+   - Accept the self-signed certificate warning
+   - This is safe for development use
 
 ### 🐳 Docker Deployment
 

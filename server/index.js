@@ -797,7 +797,13 @@ if (useHTTP2) {
   
   // Handle client errors gracefully
   server.on('clientError', (error, socket) => {
-    console.warn('⚠️  Client error:', error.message);
+    // Filter out common SSL errors that are expected with self-signed certificates
+    if (!error.message.includes('certificate unknown') && 
+        !error.message.includes('certificate verify failed') &&
+        !error.message.includes('ssl3_read_bytes') &&
+        !error.message.includes('SSL alert number')) {
+      console.warn('⚠️  Client error:', error.message);
+    }
     if (!socket.destroyed) {
       socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
     }
@@ -806,7 +812,10 @@ if (useHTTP2) {
   // Handle connection events
   server.on('connection', (socket) => {
     socket.on('error', (error) => {
-      if (error.code !== 'ECONNRESET' && error.code !== 'EPIPE') {
+      if (error.code !== 'ECONNRESET' && 
+          error.code !== 'EPIPE' && 
+          error.code !== 'ENOTFOUND' &&
+          !error.message.includes('certificate')) {
         console.warn('⚠️  Socket error:', error.message);
       }
     });
@@ -814,17 +823,22 @@ if (useHTTP2) {
   
   // Handle secure connections
   server.on('secureConnection', (tlsSocket) => {
-    const connectionInfo = {
-      protocol: tlsSocket.getProtocol(),
-      cipher: tlsSocket.getCipher()?.name,
-      alpnProtocol: tlsSocket.alpnProtocol || 'http/1.1'
-    };
-    
-    console.log('🔐 Secure connection:', connectionInfo);
+    // Only log successful connections, not every attempt
+    if (process.env.NODE_ENV === 'development') {
+      const connectionInfo = {
+        protocol: tlsSocket.getProtocol(),
+        cipher: tlsSocket.getCipher()?.name,
+        alpnProtocol: tlsSocket.alpnProtocol || 'http/1.1'
+      };
+      console.log('🔐 Secure connection:', connectionInfo);
+    }
     
     // Handle TLS socket errors
     tlsSocket.on('error', (error) => {
-      if (error.code !== 'ECONNRESET' && error.code !== 'EPIPE') {
+      if (error.code !== 'ECONNRESET' && 
+          error.code !== 'EPIPE' &&
+          !error.message.includes('certificate unknown') &&
+          !error.message.includes('ssl3_read_bytes')) {
         console.warn('⚠️  TLS socket error:', error.message);
       }
     });
@@ -851,6 +865,8 @@ if (useHTTP2) {
     console.log(`🚀 Brutal Web Ripper server running at https://localhost:${port}`);
     console.log(`🔐 Protocol: HTTPS with HTTP/2 support`);
     console.log(`🔒 TLS: Enabled with fallback to HTTP/1.1`);
+    console.log(`⚠️  Self-signed certificate warnings in browser are normal`);
+    console.log(`   Click "Advanced" → "Proceed to localhost" to continue`);
     console.log(`🔐 Authentication optional - supports anonymous and authenticated users`);
     console.log(`☁️  WebDAV integration available for authenticated users`);
     console.log(`🤖 AI tagging ${process.env.OPENAI_API_KEY ? 'enabled' : 'disabled (using fallback)'}`);
@@ -862,8 +878,10 @@ if (useHTTP2) {
     console.log(`🚫 Source ignore list available for cleaner analysis`);
     console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`📁 Static files: ${fs.existsSync(distPath) ? 'Serving from dist/' : 'Not built - run npm run build'}`);
-    console.log(`\n⚠️  Browser will show security warning for self-signed certificate`);
-    console.log(`   Click "Advanced" → "Proceed to localhost" to continue`);
+    console.log(`\n💡 SSL Certificate Info:`);
+    console.log(`   - Self-signed certificate for development use`);
+    console.log(`   - Browser warnings are expected and safe to ignore`);
+    console.log(`   - For production, use certificates from a trusted CA`);
   });
 } else {
   // HTTP/1.1
