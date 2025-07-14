@@ -1,5 +1,5 @@
 import React from 'react';
-import { Skull, Settings, LogOut, Cloud, UserPlus, Upload, BarChart3, Home } from 'lucide-react';
+import { Skull, Settings, LogOut, Cloud, UserPlus, Upload, BarChart3, Home, Zap } from 'lucide-react';
 
 interface UserData {
   id: number;
@@ -17,6 +17,7 @@ interface HeaderProps {
   onShowPocketImport: () => void;
   onShowSourceAnalysis: () => void;
   onShowLanding: () => void;
+  onShowExtractionModes: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -27,7 +28,8 @@ const Header: React.FC<HeaderProps> = ({
   onLogout,
   onShowPocketImport,
   onShowSourceAnalysis,
-  onShowLanding
+  onShowLanding,
+  onShowExtractionModes
 }) => {
   return (
     <div className="bg-white border-b-4 border-black relative z-10">
@@ -68,6 +70,13 @@ const Header: React.FC<HeaderProps> = ({
                     <span className="text-xs font-bold text-green-700 uppercase">WEBDAV</span>
                   </div>
                 )}
+                <button
+                  onClick={onShowExtractionModes}
+                  className="bg-purple-600 hover:bg-purple-700 text-white font-black py-2 px-3 border-4 border-black transition-all duration-200"
+                  title="Extraction Modes"
+                >
+                  <Zap className="w-5 h-5" />
+                </button>
                 <button
                   onClick={onShowSourceAnalysis}
                   className="bg-green-600 hover:bg-green-700 text-white font-black py-2 px-3 border-4 border-black transition-all duration-200"

@@ -14,6 +14,7 @@ import InfoSection from './components/InfoSection';
 import BrutalCard from './components/BrutalCard';
 import PocketImport from './components/PocketImport';
 import SourceAnalysis from './components/SourceAnalysis';
+import ExtractionModeSelector from './components/ExtractionModeSelector';
 import LandingPage from './components/LandingPage';
 import OfflineIndicator from './components/OfflineIndicator';
 
@@ -82,6 +83,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showPocketImport, setShowPocketImport] = useState(false);
   const [showSourceAnalysis, setShowSourceAnalysis] = useState(false);
+  const [showExtractionModes, setShowExtractionModes] = useState(false);
   
   // Auth form state
   const [authError, setAuthError] = useState('');
@@ -113,6 +115,8 @@ function App() {
       setShowSettings(false);
       setShowPocketImport(false);
       setShowSourceAnalysis(false);
+      setShowExtractionModes(false);
+      setShowExtractionModes(false);
       
       // You can auto-trigger extraction here if desired
       // handleSubmit(sharedUrl, []);
@@ -216,6 +220,7 @@ function App() {
     setShowAuth(false);
     setShowPocketImport(false);
     setShowSourceAnalysis(false);
+    setShowExtractionModes(false);
     setShowLanding(true);
   };
 
@@ -346,6 +351,36 @@ function App() {
   const handleGetStarted = () => {
     setShowLanding(false);
   };
+
+  if (showExtractionModes) {
+    return (
+      <div className="min-h-screen bg-gray-100 relative overflow-hidden">
+        <BackgroundElements />
+
+        {/* Header */}
+        <Header
+          isAuthenticated={isAuthenticated}
+          user={user}
+          onShowSettings={() => setShowSettings(true)}
+          onShowAuth={() => setShowAuth(true)}
+          onLogout={handleLogout}
+          onShowPocketImport={() => setShowPocketImport(true)}
+          onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
+          onShowLanding={() => setShowLanding(true)}
+          onShowExtractionModes={() => setShowExtractionModes(true)}
+        />
+
+        <div className="container mx-auto px-4 py-8 relative z-10">
+          <div className="max-w-2xl mx-auto">
+            <ExtractionModeSelector
+              onClose={() => setShowExtractionModes(false)}
+              isAuthenticated={isAuthenticated}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (authLoading) {
     return (

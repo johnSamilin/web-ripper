@@ -17,11 +17,12 @@ import dotenv from 'dotenv';
 import { User } from './models/index.js';
 import { authenticateToken, generateToken } from './middleware/auth.js';
 import { uploadToWebDAV, testWebDAVConnection, listWebDAVFiles } from './services/webdav.js';
-import { generateTags } from './services/aiTagger.js';
 import { analyzeSourcesFromWebDAV, analyzeSingleSource } from './services/sourceAnalyzer.js';
-import { generateHTMLWithInlineImages } from './services/htmlGenerator.js';
+import { generateTags } from './services/aiTagger.js';
+import { extractionService } from './services/extractionService.js';
 import cleanupRoutes from './routes/cleanup.js';
 import sourceRoutes from './routes/sources.js';
+import extractionRoutes from './routes/extraction.js';
 
 // Load environment variables
 dotenv.config();
@@ -80,74 +81,6 @@ const authLimiter = rateLimit({
   max: parseInt(process.env.AUTH_RATE_LIMIT_MAX) || 5,
   message: { error: 'Too many authentication attempts, please try again later' }
 });
-
-// Enhanced content extraction function
-function extractMainContent($, url) {
-  // Remove unwanted elements
-  $('script, style, nav, header, footer, aside, .advertisement, .ads, .social-share, .comments').remove();
-  
-  // Try to find the main content area
-  let mainContent = null;
-  
-  // Common selectors for main content
-  const contentSelectors = [
-    'main',
-    'article',
-    '[role="main"]',
-    '.main-content',
-    '.post-content',
-    '.entry-content',
-    '.article-content',
-    '.content',
-    '#content',
-    '.post-body',
-    '.article-body'
-  ];
-  
-  for (const selector of contentSelectors) {
-    const element = $(selector).first();
-    if (element.length && element.text().trim().length > 100) {
-      mainContent = element;
-      break;
-    }
-  }
-  
-  // If no main content found, try to extract based on text density
-  if (!mainContent) {
-    let bestElement = null;
-    let maxScore = 0;
-    
-    $('div, section, article').each((i, elem) => {
-      const $elem = $(elem);
-      const text = $elem.text().trim();
-      const textLength = text.length;
-      const linkDensity = $elem.find('a').text().length / Math.max(textLength, 1);
-      const paragraphs = $elem.find('p').length;
-      
-      // Score based on text length, paragraph count, and low link density
-      const score = textLength * (1 - linkDensity) * Math.log(paragraphs + 1);
-      
-      if (score > maxScore && textLength > 200) {
-        maxScore = score;
-        bestElement = $elem;
-      }
-    });
-    
-    if (bestElement) {
-      mainContent = bestElement;
-    }
-  }
-  
-  // Fallback to body if nothing found
-  if (!mainContent) {
-    mainContent = $('body');
-  }
-  
-  // Clean up the selected content
-  mainContent.find('script, style, .advertisement, .ads').remove();
-  
-  return mainContent;
-}
 
 // Helper function to create safe filename from title
 function createSafeFilename(title) {
@@ -542,6 +475,47 @@ app.post('/api/analyze/sources/feeds/:domain', authenticateToken, async (req, re
   }
 });
 
+// EXTRACTION INFO ROUTE
+app.get('/api/extraction/info', optionalAuth, async (req, res) => {
+  try {
+    const info = await extractionService.getExtractionInfo();
+    res.json({
+      success: true,
+      ...info
+    });
+  } catch (error) {
+    console.error('Extraction info error:', error);
+    res.status(500).json({ 
+      error: 'Failed to get extraction info',
+      details: error.message 
+    });
+  }
+});
+
+// EXTRACTION MODE ROUTE (for authenticated users)
+app.post('/api/extraction/mode', authenticateToken, async (req, res) => {
+  try {
+    const { mode } = req.body;
+    
+    if (!mode) {
+      return res.status(400).json({ error: 'Extraction mode is required' });
+    }
+
+    extractionService.setExtractionMode(mode);
+    
+    res.json({
+      success: true,
+      message: `Extraction mode changed to ${mode}`,
+      currentMode: extractionService.getExtractionMode()
+    });
+  } catch (error) {
+    console.error('Set extraction mode error:', error);
+    res.status(400).json({ 
+      error: error.message 
+    });
+  }
+});
+
 // CONTENT EXTRACTION ROUTE (Now supports both authenticated and anonymous users)
 app.post('/api/extract', optionalAuth, async (req, res) => {
   try {
@@ -575,25 +549,15 @@ app.post('/api/extract', optionalAuth, async (req, res) => {
     }
     
     const html = await response.text();
-    const $ = cheerio.load(html);
     
-    // Extract metadata
-    const title = $('title').text().trim() || 
-                 $('h1').first().text().trim() || 
-                 'Untitled';
-    
-    const description = $('meta[name="description"]').attr('content') || 
-                       $('meta[property="og:description"]').attr('content') || 
-                       '';
-    
-    // Extract main content
-    const mainContent = extractMainContent($, validUrl.href);
+    // Use the extraction service instead of direct Cheerio
+    const extractionResult = await extractionService.extractContent(validUrl.href, html);
     
     // 🎯 CREATE FILENAME FROM ARTICLE TITLE
-    const safeFilename = createSafeFilename(title);
+    const safeFilename = createSafeFilename(extractionResult.title);
     const filename = `${safeFilename}.html`; // Changed to .html
     
-    console.log(`📝 Generated filename: ${filename} (from title: "${title}")`);
+    console.log(`📝 Generated filename: ${filename} (from title: "${extractionResult.title}")`);
     
     // Generate AI tags if WebDAV is configured
     let finalTags = [...userTags];
@@ -601,7 +565,7 @@ app.post('/api/extract', optionalAuth, async (req, res) => {
     
     if (hasWebDAV) {
       try {
-        const aiTags = await generateTags(title, mainContent.text(), validUrl.href, description);
+        const aiTags = await generateTags(extractionResult.title, extractionResult.content, validUrl.href, extractionResult.description);
         // Combine user tags with AI tags, removing duplicates
         finalTags = [...new Set([...userTags, ...aiTags])];
         console.log(`🤖 Generated tags: ${aiTags.join(', ')}`);
@@ -610,21 +574,17 @@ app.post('/api/extract', optionalAuth, async (req, res) => {
       }
     }
 
-    // 🎨 GENERATE HTML WITH INLINE IMAGES
-    console.log(`🎨 Generating HTML with inline images...`);
-    const htmlResult = await generateHTMLWithInlineImages(
-      mainContent.html() || '',
-      validUrl.href,
-      title,
-      description,
-      validUrl.href,
+    // 🎨 PROCESS EXTRACTED CONTENT
+    console.log(`🎨 Processing extracted content using ${extractionResult.extractionMethod}...`);
+    const htmlResult = await extractionService.processExtractedContent(extractionResult,
       {
         tags: finalTags,
         userTags: userTags,
         extractedBy: user?.username,
         aiGenerated: finalTags.length > userTags.length,
         originalFilename: filename,
-        safeFilename: safeFilename
+        safeFilename: safeFilename,
+        extractionMethod: extractionResult.extractionMethod
       }
     );
 
@@ -640,8 +600,8 @@ app.post('/api/extract', optionalAuth, async (req, res) => {
         
         // Prepare metadata for WebDAV storage
         const metadata = {
-          title,
-          description,
+          title: extractionResult.title,
+          description: extractionResult.description,
           url: validUrl.href,
           domain: validUrl.hostname,
           extractedBy: user.username,
@@ -655,7 +615,8 @@ app.post('/api/extract', optionalAuth, async (req, res) => {
           safeFilename: safeFilename,
           datePath: datePath,
           format: 'html',
-          hasInlineImages: true
+          hasInlineImages: extractionResult.extractionMethod === 'cheerio',
+          extractionMethod: extractionResult.extractionMethod
         };
 
         webdavResult = await uploadToWebDAV({
@@ -676,8 +637,8 @@ app.post('/api/extract', optionalAuth, async (req, res) => {
 
     res.json({
       success: true,
-      title,
-      description,
+      title: extractionResult.title,
+      description: extractionResult.description,
       filename,
       content: htmlResult.html,
       wordCount: htmlResult.wordCount,
@@ -685,6 +646,7 @@ app.post('/api/extract', optionalAuth, async (req, res) => {
       url: validUrl.href,
       tags: finalTags,
       format: 'html',
+      extractionMethod: extractionResult.extractionMethod,
       webdav: webdavResult ? {
         uploaded: true,
         path: webdavResult.path,
@@ -731,6 +693,9 @@ app.use('/api', cleanupRoutes);
 
 // SOURCE IGNORE LIST ROUTES
 app.use('/api', sourceRoutes);
+
+// EXTRACTION ROUTES
+app.use('/api/extraction', extractionRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ 
