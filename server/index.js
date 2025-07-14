@@ -18,7 +18,6 @@ import { User } from './models/index.js';
 import { authenticateToken, generateToken } from './middleware/auth.js';
 import { uploadToWebDAV, testWebDAVConnection, listWebDAVFiles } from './services/webdav.js';
 import { analyzeSourcesFromWebDAV, analyzeSingleSource } from './services/sourceAnalyzer.js';
-import { generateTags } from './services/aiTagger.js';
 import { extractionService } from './services/extractionService.js';
 import cleanupRoutes from './routes/cleanup.js';
 import sourceRoutes from './routes/sources.js';
@@ -562,17 +561,6 @@ app.post('/api/extract', optionalAuth, async (req, res) => {
     // Generate AI tags if WebDAV is configured
     let finalTags = [...userTags];
     const hasWebDAV = user && !!(user.webdavUrl && user.webdavUsername && user.webdavPassword);
-    
-    if (hasWebDAV) {
-      try {
-        const aiTags = await generateTags(extractionResult.title, extractionResult.content, validUrl.href, extractionResult.description);
-        // Combine user tags with AI tags, removing duplicates
-        finalTags = [...new Set([...userTags, ...aiTags])];
-        console.log(`🤖 Generated tags: ${aiTags.join(', ')}`);
-      } catch (error) {
-        console.error('Tag generation failed:', error);
-      }
-    }
 
     // 🎨 PROCESS EXTRACTED CONTENT
     console.log(`🎨 Processing extracted content using ${extractionResult.extractionMethod}...`);
@@ -610,7 +598,6 @@ app.post('/api/extract', optionalAuth, async (req, res) => {
           imageCount: htmlResult.imageCount,
           tags: finalTags,
           userTags: userTags,
-          aiGenerated: finalTags.length > userTags.length,
           originalFilename: filename,
           safeFilename: safeFilename,
           datePath: datePath,
@@ -664,29 +651,6 @@ app.post('/api/extract', optionalAuth, async (req, res) => {
   }
 });
 
-// TAG SUGGESTION ROUTE
-app.post('/api/suggest-tags', optionalAuth, async (req, res) => {
-  try {
-    const { title, description, url } = req.body;
-    
-    if (!title || !url) {
-      return res.status(400).json({ error: 'Title and URL are required' });
-    }
-    
-    const suggestedTags = await generateTags(title, description || '', url, description);
-    
-    res.json({
-      success: true,
-      tags: suggestedTags
-    });
-  } catch (error) {
-    console.error('Tag suggestion error:', error);
-    res.status(500).json({ 
-      error: 'Failed to generate tag suggestions',
-      details: error.message 
-    });
-  }
-});
 
 // CLEANUP ROUTES
 app.use('/api', cleanupRoutes);
