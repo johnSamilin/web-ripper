@@ -33,7 +33,6 @@ distinguished_name = req_distinguished_name
 x509_extensions = v3_req
 prompt = no
 default_bits = 2048
-default_md = sha256
 
 [req_distinguished_name]
 C = US
@@ -46,19 +45,20 @@ emailAddress = dev@webritper.local
 
 [v3_req]
 basicConstraints = CA:FALSE
-keyUsage = critical, digitalSignature, keyEncipherment
-extendedKeyUsage = critical, serverAuth
+keyUsage = critical, digitalSignature, keyEncipherment, keyAgreement
+extendedKeyUsage = critical, serverAuth, clientAuth
 subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer:always
 subjectAltName = @alt_names
+issuerAltName = issuer:copy
 
 [alt_names]
 DNS.1 = localhost
 DNS.2 = *.localhost
-DNS.3 = local.webritper.com
-DNS.4 = webritper.local
+DNS.3 = 127.0.0.1
+DNS.4 = ::1
 IP.1 = 127.0.0.1
 IP.2 = ::1
-IP.3 = 0.0.0.0
 `;
 
 fs.writeFileSync(configFile, opensslConfig);
@@ -75,12 +75,12 @@ try {
   console.log('🔑 Generating RSA private key (2048-bit)...');
   
   // Generate private key separately for better control
-  execSync(`openssl genrsa -out "${keyFile}" 4096`, { stdio: 'pipe' });
+  execSync(`openssl genrsa -out "${keyFile}" 2048`, { stdio: 'pipe' });
   
   console.log('📜 Generating certificate with HTTP/2 compatible extensions...');
   
   // Generate certificate with the private key
-  const certCommand = `openssl req -new -x509 -key "${keyFile}" -out "${certFile}" -days 365 -config "${configFile}" -extensions v3_req -sha256`;
+  const certCommand = `openssl req -new -x509 -key "${keyFile}" -out "${certFile}" -days 365 -config "${configFile}" -extensions v3_req`;
   execSync(certCommand, { stdio: 'pipe' });
   
   console.log('✅ SSL certificate generated successfully!\n');
