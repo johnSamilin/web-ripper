@@ -27,7 +27,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ isAuthenticated, hasWebDAV })
       <InfoCard
         icon={<Zap className="w-6 h-6 text-white" />}
         title="NO MERCY"
-        description="ANY SITE • ANY TARGET"
+        description="CLEAN EXTRACTION • FAST"
         iconBg="bg-blue-600"
       />
 

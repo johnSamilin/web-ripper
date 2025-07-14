@@ -817,7 +817,6 @@ if (useHTTP2) {
     console.log(`🔒 TLS: Enabled with fallback to HTTP/1.1`);
     console.log(`🔐 Authentication optional - supports anonymous and authenticated users`);
     console.log(`☁️  WebDAV integration available for authenticated users`);
-    console.log(`🤖 AI tagging ${process.env.OPENAI_API_KEY ? 'enabled' : 'disabled (using fallback)'}`);
     console.log(`📁 Files organized by date: ${process.env.ORGANIZE_BY_DATE === 'true' ? 'enabled' : 'disabled'}`);
     console.log(`📝 Files will be named after article titles for better organization`);
     console.log(`📊 Source analysis available for authenticated users with WebDAV`);
@@ -879,7 +878,6 @@ if (useHTTP2) {
     console.log(`🔐 Protocol: HTTP/1.1`);
     console.log(`🔐 Authentication optional - supports anonymous and authenticated users`);
     console.log(`☁️  WebDAV integration available for authenticated users`);
-    console.log(`🤖 AI tagging ${process.env.OPENAI_API_KEY ? 'enabled' : 'disabled (using fallback)'}`);
     console.log(`📁 Files organized by date: ${process.env.ORGANIZE_BY_DATE === 'true' ? 'enabled' : 'disabled'}`);
     console.log(`📝 Files will be named after article titles for better organization`);
     console.log(`📊 Source analysis available for authenticated users with WebDAV`);

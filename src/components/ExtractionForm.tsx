@@ -98,53 +98,23 @@ const ExtractionForm: React.FC<ExtractionFormProps> = ({
           )}
         </div>
 
+
         {isAuthenticated && hasWebDAV && (
-          <>
-            <div>
-              <label htmlFor="title" className="block text-sm font-black text-black mb-2 uppercase tracking-widest">
-                TITLE (OPTIONAL)
-              </label>
-              <BrutalInput
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Article title for better AI tagging"
-                disabled={loading}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="description" className="block text-sm font-black text-black mb-2 uppercase tracking-widest">
-                DESCRIPTION (OPTIONAL)
-              </label>
-              <BrutalInput
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Brief description for better AI tagging"
-                disabled={loading}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-black text-black mb-2 uppercase tracking-widest">
-                TAGS
-              </label>
-              <TagInput
-                tags={tags}
-                onTagsChange={setTags}
-                onSuggestTags={handleSuggestTags}
-                title={title}
-                description={description}
-                url={url}
-                disabled={loading}
-                placeholder="Add custom tags..."
-              />
-              <p className="text-xs font-bold text-gray-600 mt-2 uppercase">
-                🤖 AI will suggest additional tags based on content
-              </p>
-            </div>
-          </>
+          <div>
+            <label className="block text-sm font-black text-black mb-2 uppercase tracking-widest">
+              TAGS (OPTIONAL)
+            </label>
+            <BrutalInput
+              type="text"
+              value={tags.join(', ')}
+              onChange={(e) => setTags(e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag))}
+              placeholder="Add tags separated by commas..."
+              disabled={loading}
+            />
+            <p className="text-xs font-bold text-gray-600 mt-2 uppercase">
+              Separate multiple tags with commas
+            </p>
+          </div>
         )}
 
         {error && (

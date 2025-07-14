@@ -155,7 +155,6 @@ const generatePlainHTMLTemplate = (title, description, url, content, metadata = 
                 Original URL: <a href="${url}" target="_blank">${url}</a><br>
                 Extraction Date: ${new Date().toISOString()}<br>
                 ${metadata.userTags && metadata.userTags.length > 0 ? `User Tags: ${metadata.userTags.join(', ')}<br>` : ''}
-                ${metadata.aiGenerated ? 'AI-Enhanced Tagging: Enabled<br>' : ''}
                 Format: Plain HTML with inlined images (CSS-free)
             </p>
         </footer>

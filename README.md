@@ -304,7 +304,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🎉 Acknowledgments
 
 - **Cheerio** for HTML parsing
-- **OpenAI** for AI-powered tagging
 - **WebDAV** community for storage standards
 - **React** and **Node.js** ecosystems
 
