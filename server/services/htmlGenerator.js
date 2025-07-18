@@ -123,6 +123,7 @@ const removeLayoutCSS = (htmlContent) => {
     const allElements = document.querySelectorAll('*');
     allElements.forEach(element => {
       // Remove id attributes (optional - uncomment if you want to remove all IDs)
+      Array.from(element.attributes).forEach(attr => {
         // Remove layout-related data attributes
         if (attr.name.startsWith('data-') && 
             (attr.name.includes('layout') || 
@@ -130,7 +131,7 @@ const removeLayoutCSS = (htmlContent) => {
              attr.name.includes('flex') ||
              attr.name.includes('position') ||
              attr.name.includes('margin') ||
-             attr.name.includes('padding'))) {
+             attr.name.includes('padding') ||
              attr.name.includes('class') || 
              attr.name.includes('css'))) {
           element.removeAttribute(attr.name);
