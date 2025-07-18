@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
-// Plain HTML template without CSS
+// Plain HTML template with minimal text styling
 const generateCleanHTML = (title, description, url, content, metadata = {}) => {
   const extractedDate = metadata.extractedAt ? 
     new Date(metadata.extractedAt).toLocaleDateString('en-US', {
@@ -30,6 +30,27 @@ const generateCleanHTML = (title, description, url, content, metadata = {}) => {
     <meta name="extracted-date" content="${metadata.extractedAt || new Date().toISOString()}">
     <meta name="source-url" content="${url}">
     ${metadata.tags ? `<meta name="keywords" content="${metadata.tags.join(', ')}">` : ''}
+    <style>
+        /* Minimal styling for readability */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3, h4, h5, h6 { margin: 1em 0 0.5em 0; font-weight: bold; }
+        p { margin: 1em 0; }
+        blockquote { margin: 1em 0; padding: 0 1em; border-left: 4px solid #ddd; font-style: italic; }
+        code { font-family: monospace; background: #f5f5f5; padding: 2px 4px; }
+        pre { background: #f5f5f5; padding: 1em; overflow-x: auto; }
+        a { color: #0066cc; }
+        img { max-width: 100%; height: auto; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background: #f5f5f5; }
+    </style>
 </head>
 <body>
     <article>
@@ -75,52 +96,76 @@ const generateCleanHTML = (title, description, url, content, metadata = {}) => {
 </html>`;
 };
 
-// Remove all CSS and CSS-related attributes from HTML content
-const removeAllCSS = (htmlContent) => {
+// Remove layout CSS but preserve basic text formatting
+const removeLayoutCSS = (htmlContent) => {
   try {
     const dom = new JSDOM(htmlContent);
     const document = dom.window.document;
     
-    // Remove all style tags
+    // Remove most style tags but preserve text-related ones
     const styleTags = document.querySelectorAll('style');
-    styleTags.forEach(tag => tag.remove());
+    styleTags.forEach(tag => {
+      const styleContent = tag.textContent || '';
+      // Remove if it doesn't contain text-related properties
+      if (!styleContent.includes('font') && 
+          !styleContent.includes('line-height') && 
+          !styleContent.includes('text-')) {
+        tag.remove();
+      }
+    });
     
-    // Remove all link tags with rel="stylesheet"
+    // Remove external stylesheets
     const linkTags = document.querySelectorAll('link[rel="stylesheet"]');
     linkTags.forEach(tag => tag.remove());
     
-    // Remove all inline style attributes
+    // Process inline styles - keep text properties
     const elementsWithStyle = document.querySelectorAll('[style]');
     elementsWithStyle.forEach(element => {
-      element.removeAttribute('style');
+      const style = element.getAttribute('style');
+      if (style) {
+        const textStyles = [];
+        const styleRules = style.split(';').map(rule => rule.trim()).filter(rule => rule);
+        
+        styleRules.forEach(rule => {
+          const [property, value] = rule.split(':').map(part => part.trim());
+          if (property && value && 
+              property.match(/^(font|line-height|letter-spacing|text-align|text-decoration|color|font-weight|font-style)$/)) {
+            textStyles.push(`${property}: ${value}`);
+          }
+        });
+        
+        if (textStyles.length > 0) {
+          element.setAttribute('style', textStyles.join('; '));
+        } else {
+          element.removeAttribute('style');
+        }
+      }
     });
     
-    // Remove all CSS class attributes
+    // Remove most class attributes
     const elementsWithClass = document.querySelectorAll('[class]');
     elementsWithClass.forEach(element => {
       element.removeAttribute('class');
     });
     
-    // Remove CSS-related data attributes
+    // Remove layout-related data attributes
     const allElements = document.querySelectorAll('*');
     allElements.forEach(element => {
       Array.from(element.attributes).forEach(attr => {
         if (attr.name.startsWith('data-') && 
-            (attr.name.includes('style') || 
-             attr.name.includes('class') || 
-             attr.name.includes('css') ||
-             attr.name.includes('theme') ||
-             attr.name.includes('color'))) {
+            (attr.name.includes('layout') || 
+             attr.name.includes('grid') || 
+             attr.name.includes('position'))) {
           element.removeAttribute(attr.name);
         }
       });
     });
     
-    console.log(`🧹 CSS removed: ${styleTags.length} style tags, ${linkTags.length} stylesheets, ${elementsWithStyle.length} inline styles, ${elementsWithClass.length} class attributes`);
+    console.log(`🎨 Layout CSS removed, text styling preserved: ${styleTags.length} style tags processed, ${linkTags.length} stylesheets removed, ${elementsWithStyle.length} inline styles processed`);
     
     return document.documentElement.outerHTML;
   } catch (error) {
-    console.error('Error removing CSS:', error);
+    console.error('Error processing CSS:', error);
     return htmlContent; // Return original if cleaning fails
   }
 };
@@ -318,7 +363,7 @@ const cleanupCSSInFiles = async (webdavConfig) => {
         }
         
         // Remove ALL CSS from content (including classes and inline styles)
-        const cleanContent = removeAllCSS(extracted.content);
+        const cleanContent = removeLayoutCSS(extracted.content);
         
         // Generate new clean HTML
         const cleanHTML = generateCleanHTML(
@@ -348,7 +393,7 @@ const cleanupCSSInFiles = async (webdavConfig) => {
           contentType: 'text/html'
         });
         
-        console.log(`✅ Cleaned: ${file.filename} (removed all CSS classes and inline styles)`);
+        console.log(`✅ Cleaned: ${file.filename} (removed layout CSS, preserved text styling)`);
         processedCount++;
         
         // Small delay to avoid overwhelming the server

@@ -569,7 +569,6 @@ app.post('/api/extract', optionalAuth, async (req, res) => {
         tags: finalTags,
         userTags: userTags,
         extractedBy: user?.username,
-        aiGenerated: finalTags.length > userTags.length,
         originalFilename: filename,
         safeFilename: safeFilename,
         extractionMethod: extractionResult.extractionMethod
