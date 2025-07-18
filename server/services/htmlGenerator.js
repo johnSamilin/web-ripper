@@ -337,7 +337,7 @@ export const generateHTMLWithInlineImages = async (htmlContent, baseUrl, title, 
     // Wait for all images to be processed
     await Promise.all(imagePromises);
     
-    // Get the processed HTML content and remove layout CSS while preserving text styling
+    // Get the processed HTML content and remove all CSS
     const processedContent = removeLayoutCSS(document.body.outerHTML);
     
     // Calculate word count from clean text
@@ -352,7 +352,7 @@ export const generateHTMLWithInlineImages = async (htmlContent, baseUrl, title, 
       imageCount: images.length
     });
     
-    console.log(`✅ HTML generation complete with preserved text styling: ${wordCount} words, ${images.length} images processed`);
+    console.log(`✅ CSS-free HTML generation complete: ${wordCount} words, ${images.length} images processed`);
     
     return {
       html: finalHTML,
