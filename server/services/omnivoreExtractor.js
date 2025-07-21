@@ -1,16 +1,16 @@
-import { Readability } from '@omnivore-app/readability';
+import { Readability } from '@mozilla/readability';
 import { JSDOM } from 'jsdom';
 
-// Omnivore-based content extraction service
-export class OmnivoreExtractor {
+// Mozilla Readability-based content extraction service
+export class ReadabilityExtractor {
   constructor(options = {}) {
-    this.timeout = parseInt(options.timeout || process.env.OMNIVORE_TIMEOUT || '30000');
-    this.minContentLength = parseInt(options.minContentLength || process.env.OMNIVORE_MIN_CONTENT_LENGTH || '140');
-    this.minScore = parseFloat(options.minScore || process.env.OMNIVORE_MIN_SCORE || '20');
-    this.charThreshold = parseInt(options.charThreshold || process.env.OMNIVORE_CHAR_THRESHOLD || '500');
+    this.timeout = parseInt(options.timeout || process.env.READABILITY_TIMEOUT || '30000');
+    this.minContentLength = parseInt(options.minContentLength || process.env.READABILITY_MIN_CONTENT_LENGTH || '140');
+    this.minScore = parseFloat(options.minScore || process.env.READABILITY_MIN_SCORE || '20');
+    this.charThreshold = parseInt(options.charThreshold || process.env.READABILITY_CHAR_THRESHOLD || '500');
   }
 
-  // Check if Omnivore is available (it's always available since it's a JS library)
+  // Check if Mozilla Readability is available (it's always available since it's a JS library)
   async isAvailable() {
     try {
       // Test if we can create a Readability instance
@@ -18,15 +18,15 @@ export class OmnivoreExtractor {
       new Readability(testDom.window.document);
       return true;
     } catch (error) {
-      console.warn('⚠️  Omnivore Readability not available:', error.message);
+      console.warn('⚠️  Mozilla Readability not available:', error.message);
       return false;
     }
   }
 
-  // Extract content from HTML using Omnivore's Readability
+  // Extract content from HTML using Mozilla Readability
   async extractFromHtml(html, url = '') {
     try {
-      console.log(`🔧 Extracting content using Omnivore Readability: ${url || 'HTML content'}`);
+      console.log(`🔧 Extracting content using Mozilla Readability: ${url || 'HTML content'}`);
 
       if (!html || html.trim().length === 0) {
         throw new Error('Empty HTML content provided');
@@ -64,7 +64,7 @@ export class OmnivoreExtractor {
       const article = reader.parse();
 
       if (!article) {
-        throw new Error('Omnivore failed to extract readable content from the document');
+        throw new Error('Mozilla Readability failed to extract readable content from the document');
       }
 
       // Validate extracted content
@@ -80,7 +80,7 @@ export class OmnivoreExtractor {
       const wordCount = this.calculateWordCount(textContent);
       const imageCount = this.countImages(processedContent);
 
-      console.log(`✅ Omnivore extraction completed: ${article.title} (${wordCount} words, ${imageCount} images)`);
+      console.log(`✅ Mozilla Readability extraction completed: ${article.title} (${wordCount} words, ${imageCount} images)`);
 
       return {
         success: true,
@@ -91,7 +91,7 @@ export class OmnivoreExtractor {
         wordCount: wordCount,
         imageCount: imageCount,
         url: url,
-        extractionMethod: 'omnivore',
+        extractionMethod: 'readability',
         readingTime: Math.ceil(wordCount / 200), // Assume 200 WPM
         author: article.byline || '',
         siteName: article.siteName || '',
@@ -100,15 +100,15 @@ export class OmnivoreExtractor {
       };
 
     } catch (error) {
-      console.error('❌ Omnivore extraction failed:', error);
-      throw new Error(`Omnivore extraction failed: ${error.message}`);
+      console.error('❌ Mozilla Readability extraction failed:', error);
+      throw new Error(`Mozilla Readability extraction failed: ${error.message}`);
     }
   }
 
   // Extract content from URL (fetch HTML first, then extract)
   async extractFromUrl(url) {
     try {
-      console.log(`🔧 Fetching and extracting content using Omnivore: ${url}`);
+      console.log(`🔧 Fetching and extracting content using Mozilla Readability: ${url}`);
 
       // Import fetch dynamically to avoid issues
       const fetch = (await import('node-fetch')).default;
@@ -128,12 +128,12 @@ export class OmnivoreExtractor {
       return await this.extractFromHtml(html, url);
 
     } catch (error) {
-      console.error('❌ Omnivore URL extraction failed:', error);
-      throw new Error(`Omnivore URL extraction failed: ${error.message}`);
+      console.error('❌ Mozilla Readability URL extraction failed:', error);
+      throw new Error(`Mozilla Readability URL extraction failed: ${error.message}`);
     }
   }
 
-  // Pre-process document to improve extraction quality
+  // Pre-process document to improve Readability extraction quality
   preprocessDocument(document) {
     try {
       // Remove unwanted elements that might interfere with extraction
@@ -173,11 +173,11 @@ export class OmnivoreExtractor {
       contentSelectors.forEach(selector => {
         const elements = document.querySelectorAll(selector);
         elements.forEach(el => {
-          el.setAttribute('data-omnivore-content', 'true');
+          el.setAttribute('data-readability-content', 'true');
         });
       });
 
-      console.log('📝 Document preprocessed for Omnivore extraction');
+      console.log('📝 Document preprocessed for Mozilla Readability extraction');
 
     } catch (error) {
       console.warn('⚠️  Document preprocessing failed:', error.message);
@@ -297,10 +297,10 @@ export class OmnivoreExtractor {
     }
   }
 
-  // Get Omnivore version and capabilities
+  // Get Mozilla Readability version and capabilities
   async getInfo() {
     try {
-      const packageInfo = await import('@omnivore-app/readability/package.json', { assert: { type: 'json' } });
+      const packageInfo = await import('@mozilla/readability/package.json', { assert: { type: 'json' } });
       
       return {
         available: true,
@@ -312,20 +312,20 @@ export class OmnivoreExtractor {
           'Reading time estimation',
           'Content quality assessment'
         ],
-        library: '@omnivore-app/readability'
+        library: '@mozilla/readability'
       };
     } catch (error) {
       return {
         available: await this.isAvailable(),
         error: error.message,
-        library: '@omnivore-app/readability'
+        library: '@mozilla/readability'
       };
     }
   }
 }
 
 // Create singleton instance
-export const omnivoreExtractor = new OmnivoreExtractor();
+export const readabilityExtractor = new ReadabilityExtractor();
 
 // Export for testing
-export default OmnivoreExtractor;
+export default ReadabilityExtractor;

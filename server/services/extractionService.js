@@ -1,13 +1,13 @@
 import * as cheerio from 'cheerio';
 import { monolithExtractor } from './monolithExtractor.js';
-import { omnivoreExtractor } from './omnivoreExtractor.js';
+import { readabilityExtractor } from './omnivoreExtractor.js';
 import { generateHTMLWithInlineImages } from './htmlGenerator.js';
 
 // Unified content extraction service that supports multiple extraction methods
 export class ExtractionService {
   constructor() {
-    this.extractionMode = process.env.EXTRACTION_MODE || 'cheerio';
-    this.supportedModes = ['cheerio', 'monolith', 'omnivore'];
+    this.extractionMode = process.env.EXTRACTION_MODE || 'readability';
+    this.supportedModes = ['cheerio', 'readability', 'monolith'];
   }
 
   // Get current extraction mode and availability
@@ -26,16 +26,16 @@ export class ExtractionService {
       performance: 'High'
     };
 
-    // Check Omnivore availability
-    const omnivoreInfo = await omnivoreExtractor.getInfo();
-    info.modes.omnivore = {
-      available: omnivoreInfo.available,
-      description: 'Advanced content extraction using Omnivore Readability',
+    // Check Mozilla Readability availability
+    const readabilityInfo = await readabilityExtractor.getInfo();
+    info.modes.readability = {
+      available: readabilityInfo.available,
+      description: 'Advanced content extraction using Mozilla Readability',
       features: ['Smart content detection', 'Readability scoring', 'Author extraction', 'Reading time'],
       performance: 'High',
-      version: omnivoreInfo.version,
-      error: omnivoreInfo.error,
-      library: omnivoreInfo.library
+      version: readabilityInfo.version,
+      error: readabilityInfo.error,
+      library: readabilityInfo.library
     };
 
     // Check Monolith availability
@@ -168,11 +168,11 @@ export class ExtractionService {
 
       // Route to appropriate extraction method
       switch (this.extractionMode) {
-        case 'omnivore':
+        case 'readability':
           try {
-            extractionResult = await omnivoreExtractor.extractFromHtml(html, url);
-          } catch (omnivoreError) {
-            console.warn('⚠️  Omnivore extraction failed, falling back to Cheerio:', omnivoreError.message);
+            extractionResult = await readabilityExtractor.extractFromHtml(html, url);
+          } catch (readabilityError) {
+            console.warn('⚠️  Mozilla Readability extraction failed, falling back to Cheerio:', readabilityError.message);
             extractionResult = await this.extractWithCheerio(url, html);
           }
           break;
@@ -224,8 +224,8 @@ export class ExtractionService {
         };
       }
 
-      // For omnivore results, generate HTML with inline images
-      if (extractionResult.extractionMethod === 'omnivore') {
+      // For readability results, generate HTML with inline images
+      if (extractionResult.extractionMethod === 'readability') {
         const htmlResult = await generateHTMLWithInlineImages(
           extractionResult.content,
           extractionResult.url,
@@ -245,7 +245,7 @@ export class ExtractionService {
           ...htmlResult,
           title: extractionResult.title,
           description: extractionResult.description,
-          extractionMethod: extractionResult.extractionMethod,
+          extractionMethod: 'readability',
           author: extractionResult.author,
           readingTime: extractionResult.readingTime
         };
