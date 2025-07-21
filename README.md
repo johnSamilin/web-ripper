@@ -14,7 +14,7 @@ Web Ripper is a brutal content extraction tool that destroys ads, removes clutte
 
 - **🎯 Clean Content Extraction** - Removes ads, popups, and clutter automatically
 - **☁️ Cloud Storage Integration** - Saves to WebDAV with smart organization
-- **🤖 AI-Powered Tagging** - Automatic categorization using OpenAI
+- **🏷️ Manual Tagging** - Organize content with custom tags
 - **📄 Self-Contained Archives** - HTML files with embedded images (no broken links)
 - **📊 Source Analysis** - Discovers RSS feeds and newsletters from your saved sites
 - **📥 Bulk Import** - Import entire Pocket libraries or bookmark collections
@@ -82,19 +82,16 @@ Web Ripper is a brutal content extraction tool that destroys ads, removes clutte
    EXTRACTION_TIMEOUT=30000
    MAX_CONTENT_LENGTH=10mb
    
-   # Extraction Mode (cheerio, omnivore, monolith)
-   EXTRACTION_MODE=omnivore
+   # Extraction Mode (cheerio, readability, monolith)
+   EXTRACTION_MODE=readability
    
-   # Omnivore Settings
-   OMNIVORE_TIMEOUT=30000
-   OMNIVORE_MIN_CONTENT_LENGTH=140
+   # Mozilla Readability Settings
+   READABILITY_TIMEOUT=30000
+   READABILITY_MIN_CONTENT_LENGTH=140
    
    # WebDAV (Optional)
    WEBDAV_BASE_PATH=/web-ripper
    ORGANIZE_BY_DATE=true
-   
-   # AI Tagging (Optional)
-   OPENAI_API_KEY=your-openai-api-key-here
    
    # CORS
    CORS_ORIGIN=http://localhost:5173
@@ -168,7 +165,7 @@ For automatic content tagging:
 2. Add it to your `.env` file as `OPENAI_API_KEY`
 3. Restart the application
 
-Without an API key, Web Ripper uses fallback keyword extraction.
+Web Ripper now uses manual tagging - users can add their own tags when saving articles.
 
 #### File Organization
 

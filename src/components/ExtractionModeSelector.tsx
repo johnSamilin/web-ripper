@@ -311,7 +311,7 @@ const ExtractionModeSelector: React.FC<ExtractionModeSelectorProps> = ({
                 <tr className="border-b-4 border-black">
                   <th className="text-left p-2 font-black uppercase">Feature</th>
                   <th className="text-center p-2 font-black uppercase">Cheerio</th>
-                  <th className="text-center p-2 font-black uppercase">Omnivore</th>
+                  <th className="text-center p-2 font-black uppercase">Readability</th>
                   <th className="text-center p-2 font-black uppercase">Monolith</th>
                 </tr>
               </thead>
