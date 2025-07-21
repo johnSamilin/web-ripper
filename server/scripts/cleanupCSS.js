@@ -5,33 +5,16 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
-// Plain HTML template with minimal text styling
-const generateCleanHTML = (title, description, url, content, metadata = {}) => {
-  const extractedDate = metadata.extractedAt ? 
-    new Date(metadata.extractedAt).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }) : 
-    new Date().toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-
+// Clean HTML template with minimal styling
+const generateCleanHTML = (title, content) => {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
-    <meta name="description" content="${description || ''}">
-    <meta name="generator" content="Web Ripper - CSS Cleaned">
-    <meta name="extracted-date" content="${metadata.extractedAt || new Date().toISOString()}">
-    <meta name="source-url" content="${url}">
-    ${metadata.tags ? `<meta name="keywords" content="${metadata.tags.join(', ')}">` : ''}
     <style>
-        /* Minimal styling for readability */
+        /* Clean typography styles */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             line-height: 1.6;
@@ -39,6 +22,7 @@ const generateCleanHTML = (title, description, url, content, metadata = {}) => {
             margin: 0 auto;
             padding: 20px;
             color: #333;
+            background: #fff;
         }
         h1, h2, h3, h4, h5, h6 { margin: 1em 0 0.5em 0; font-weight: bold; }
         p { margin: 1em 0; }
@@ -53,45 +37,8 @@ const generateCleanHTML = (title, description, url, content, metadata = {}) => {
     </style>
 </head>
 <body>
-    <article>
-        <header>
-            <h1>${title}</h1>
-            
-            ${description ? `<blockquote>${description}</blockquote>` : ''}
-            
-            <p>
-                <strong>Source:</strong> <a href="${url}" target="_blank">${new URL(url).hostname}</a><br>
-                <strong>Extracted:</strong> ${extractedDate}
-                ${metadata.extractedBy ? `<br><strong>By:</strong> ${metadata.extractedBy}` : ''}
-                ${metadata.wordCount ? `<br><strong>Words:</strong> ${metadata.wordCount.toLocaleString()}` : ''}
-                ${metadata.imageCount ? `<br><strong>Images:</strong> ${metadata.imageCount}` : ''}
-            </p>
-            
-            ${metadata.tags && metadata.tags.length > 0 ? `
-            <p>
-                <strong>Tags:</strong> ${metadata.tags.join(', ')}
-            </p>
-            ` : ''}
-            
-            <hr>
-        </header>
-        
-        <main>
-            ${content}
-        </main>
-        
-        <footer>
-            <hr>
-            <p>
-                <strong>Extracted by Web Ripper</strong><br>
-                Original URL: <a href="${url}" target="_blank">${url}</a><br>
-                Extraction Date: ${metadata.extractedAt || new Date().toISOString()}<br>
-                ${metadata.userTags && metadata.userTags.length > 0 ? `User Tags: ${metadata.userTags.join(', ')}<br>` : ''}
-                Format: Plain HTML (CSS Cleaned)<br>
-                Cleanup Date: ${new Date().toISOString()}
-            </p>
-        </footer>
-    </article>
+    <h1>${title}</h1>
+    ${content}
 </body>
 </html>`;
 };
@@ -366,13 +313,7 @@ const cleanupCSSInFiles = async (webdavConfig) => {
         const cleanContent = removeLayoutCSS(extracted.content);
         
         // Generate new clean HTML
-        const cleanHTML = generateCleanHTML(
-          extracted.title,
-          extracted.description,
-          extracted.url,
-          cleanContent,
-          extracted.metadata
-        );
+        const cleanHTML = generateCleanHTML(extracted.title, cleanContent);
         
         // Create backup filename
         const backupFilename = file.filename.replace(/\.(html?|htm)$/i, '.backup.$1');

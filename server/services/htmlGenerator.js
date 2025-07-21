@@ -148,30 +148,16 @@ const removeLayoutCSS = (htmlContent) => {
   }
 };
 
-// Generate plain HTML template without any CSS
-const generatePlainHTMLTemplate = (title, description, url, content, metadata = {}) => {
-  const extractedDate = new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-
+// Generate clean HTML template with minimal styling
+const generateCleanHTMLTemplate = (title, content) => {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
-    <meta name="description" content="${description}">
-    <meta name="generator" content="Web Ripper">
-    <meta name="extracted-date" content="${new Date().toISOString()}">
-    <meta name="source-url" content="${url}">
-    ${metadata.author ? `<meta name="author" content="${metadata.author}">` : ''}
-    ${metadata.readingTime ? `<meta name="reading-time" content="${metadata.readingTime}">` : ''}
-    ${metadata.score ? `<meta name="readability-score" content="${metadata.score}">` : ''}
-    ${metadata.tags ? `<meta name="keywords" content="${metadata.tags.join(', ')}">` : ''}
     <style>
-        /* Preserve text styling while keeping layout clean */
+        /* Clean typography styles */
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
@@ -179,9 +165,10 @@ const generatePlainHTMLTemplate = (title, description, url, content, metadata = 
             margin: 0 auto;
             padding: 20px;
             color: #333;
+            background: #fff;
         }
         
-        /* Preserve heading hierarchy */
+        /* Typography hierarchy */
         h1 { font-size: 2.5em; line-height: 1.2; margin: 0.67em 0; font-weight: bold; }
         h2 { font-size: 2em; line-height: 1.3; margin: 0.75em 0; font-weight: bold; }
         h3 { font-size: 1.5em; line-height: 1.4; margin: 0.83em 0; font-weight: bold; }
@@ -189,7 +176,7 @@ const generatePlainHTMLTemplate = (title, description, url, content, metadata = 
         h5 { font-size: 1.1em; line-height: 1.5; margin: 1.33em 0; font-weight: bold; }
         h6 { font-size: 1em; line-height: 1.5; margin: 1.67em 0; font-weight: bold; }
         
-        /* Preserve text formatting */
+        /* Text formatting */
         p { margin: 1em 0; line-height: 1.6; }
         blockquote { 
             margin: 1em 0; 
@@ -199,7 +186,7 @@ const generatePlainHTMLTemplate = (title, description, url, content, metadata = 
             color: #666;
         }
         
-        /* Preserve code styling */
+        /* Code styling */
         code { 
             font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; 
             background: #f5f5f5; 
@@ -217,88 +204,44 @@ const generatePlainHTMLTemplate = (title, description, url, content, metadata = 
         }
         pre code { background: none; padding: 0; }
         
-        /* Preserve emphasis */
+        /* Text emphasis */
         strong, b { font-weight: bold; }
         em, i { font-style: italic; }
         u { text-decoration: underline; }
         s, strike, del { text-decoration: line-through; }
         
-        /* Preserve lists */
+        /* Lists */
         ul, ol { margin: 1em 0; padding-left: 2em; }
         li { margin: 0.5em 0; line-height: 1.6; }
         
-        /* Preserve links */
+        /* Links */
         a { color: #0066cc; text-decoration: underline; }
         a:hover { color: #004499; }
         
-        /* Preserve tables */
+        /* Tables */
         table { border-collapse: collapse; width: 100%; margin: 1em 0; }
         th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
         th { background: #f5f5f5; font-weight: bold; }
         
-        /* Preserve images */
+        /* Images */
         img { max-width: 100%; height: auto; margin: 1em 0; }
         
-        /* Header and footer styling */
-        header { border-bottom: 2px solid #eee; margin-bottom: 2em; padding-bottom: 1em; }
-        footer { border-top: 2px solid #eee; margin-top: 2em; padding-top: 1em; color: #666; font-size: 0.9em; }
-        
-        /* Preserve small text */
+        /* Small text */
         small { font-size: 0.8em; }
         sub { font-size: 0.8em; vertical-align: sub; }
         sup { font-size: 0.8em; vertical-align: super; }
         
-        /* Preserve quotes */
+        /* Quotes */
         q:before { content: '"'; }
         q:after { content: '"'; }
         
-        /* Preserve abbreviations */
+        /* Abbreviations */
         abbr[title] { border-bottom: 1px dotted; cursor: help; }
     </style>
 </head>
 <body>
-    <article>
-        <header>
-            <h1>${title}</h1>
-            
-            ${description ? `<blockquote>${description}</blockquote>` : ''}
-            
-            <p>
-                <strong>Source:</strong> <a href="${url}" target="_blank">${new URL(url).hostname}</a><br>
-                <strong>Extracted:</strong> ${extractedDate}
-                ${metadata.extractedBy ? `<br><strong>By:</strong> ${metadata.extractedBy}` : ''}
-                ${metadata.author ? `<br><strong>Author:</strong> ${metadata.author}` : ''}
-                ${metadata.wordCount ? `<br><strong>Words:</strong> ${metadata.wordCount.toLocaleString()}` : ''}
-                ${metadata.readingTime ? `<br><strong>Reading Time:</strong> ${metadata.readingTime} min` : ''}
-                ${metadata.imageCount ? `<br><strong>Images:</strong> ${metadata.imageCount}` : ''}
-                ${metadata.score ? `<br><strong>Readability Score:</strong> ${metadata.score}` : ''}
-            </p>
-            
-            ${metadata.tags && metadata.tags.length > 0 ? `
-            <p>
-                <strong>Tags:</strong> ${metadata.tags.join(', ')}
-            </p>
-            ` : ''}
-            
-            <hr>
-        </header>
-        
-        <main>
-            ${content}
-        </main>
-        
-        <footer>
-            <hr>
-            <p>
-                <strong>Extracted by Web Ripper</strong><br>
-                Original URL: <a href="${url}" target="_blank">${url}</a><br>
-                Extraction Date: ${new Date().toISOString()}<br>
-                Extraction Method: ${metadata.extractionMethod || 'Unknown'}<br>
-                ${metadata.userTags && metadata.userTags.length > 0 ? `User Tags: ${metadata.userTags.join(', ')}<br>` : ''}
-                Format: Plain HTML with inlined images (CSS-free)
-            </p>
-        </footer>
-    </article>
+    <h1>${title}</h1>
+    ${content}
 </body>
 </html>`;
 };
@@ -306,7 +249,7 @@ const generatePlainHTMLTemplate = (title, description, url, content, metadata = 
 // Process HTML content, inline images, and remove all CSS
 export const generateHTMLWithInlineImages = async (htmlContent, baseUrl, title, description, url, metadata = {}) => {
   try {
-    console.log(`🎨 Generating CSS-free HTML with inline images for: ${title}`);
+    console.log(`🎨 Generating clean HTML with inline images for: ${title}`);
     
     const dom = new JSDOM(htmlContent);
     const document = dom.window.document;
@@ -353,13 +296,9 @@ export const generateHTMLWithInlineImages = async (htmlContent, baseUrl, title, 
     const wordCount = textContent.split(/\s+/).filter(word => word.length > 0).length;
     
     // Generate final HTML document
-    const finalHTML = generatePlainHTMLTemplate(title, description, url, processedContent, {
-      ...metadata,
-      wordCount,
-      imageCount: images.length
-    });
+    const finalHTML = generateCleanHTMLTemplate(title, processedContent);
     
-    console.log(`✅ CSS-free HTML generation complete: ${wordCount} words, ${images.length} images processed`);
+    console.log(`✅ Clean HTML generation complete: ${wordCount} words, ${images.length} images processed`);
     
     return {
       html: finalHTML,
