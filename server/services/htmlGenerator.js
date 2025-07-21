@@ -166,6 +166,9 @@ const generatePlainHTMLTemplate = (title, description, url, content, metadata = 
     <meta name="generator" content="Web Ripper">
     <meta name="extracted-date" content="${new Date().toISOString()}">
     <meta name="source-url" content="${url}">
+    ${metadata.author ? `<meta name="author" content="${metadata.author}">` : ''}
+    ${metadata.readingTime ? `<meta name="reading-time" content="${metadata.readingTime}">` : ''}
+    ${metadata.score ? `<meta name="readability-score" content="${metadata.score}">` : ''}
     ${metadata.tags ? `<meta name="keywords" content="${metadata.tags.join(', ')}">` : ''}
     <style>
         /* Preserve text styling while keeping layout clean */
@@ -264,8 +267,11 @@ const generatePlainHTMLTemplate = (title, description, url, content, metadata = 
                 <strong>Source:</strong> <a href="${url}" target="_blank">${new URL(url).hostname}</a><br>
                 <strong>Extracted:</strong> ${extractedDate}
                 ${metadata.extractedBy ? `<br><strong>By:</strong> ${metadata.extractedBy}` : ''}
+                ${metadata.author ? `<br><strong>Author:</strong> ${metadata.author}` : ''}
                 ${metadata.wordCount ? `<br><strong>Words:</strong> ${metadata.wordCount.toLocaleString()}` : ''}
+                ${metadata.readingTime ? `<br><strong>Reading Time:</strong> ${metadata.readingTime} min` : ''}
                 ${metadata.imageCount ? `<br><strong>Images:</strong> ${metadata.imageCount}` : ''}
+                ${metadata.score ? `<br><strong>Readability Score:</strong> ${metadata.score}` : ''}
             </p>
             
             ${metadata.tags && metadata.tags.length > 0 ? `
@@ -287,6 +293,7 @@ const generatePlainHTMLTemplate = (title, description, url, content, metadata = 
                 <strong>Extracted by Web Ripper</strong><br>
                 Original URL: <a href="${url}" target="_blank">${url}</a><br>
                 Extraction Date: ${new Date().toISOString()}<br>
+                Extraction Method: ${metadata.extractionMethod || 'Unknown'}<br>
                 ${metadata.userTags && metadata.userTags.length > 0 ? `User Tags: ${metadata.userTags.join(', ')}<br>` : ''}
                 Format: Plain HTML with inlined images (CSS-free)
             </p>

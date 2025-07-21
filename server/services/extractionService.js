@@ -1,12 +1,13 @@
 import * as cheerio from 'cheerio';
 import { monolithExtractor } from './monolithExtractor.js';
+import { omnivoreExtractor } from './omnivoreExtractor.js';
 import { generateHTMLWithInlineImages } from './htmlGenerator.js';
 
 // Unified content extraction service that supports multiple extraction methods
 export class ExtractionService {
   constructor() {
     this.extractionMode = process.env.EXTRACTION_MODE || 'cheerio';
-    this.supportedModes = ['cheerio', 'monolith'];
+    this.supportedModes = ['cheerio', 'monolith', 'omnivore'];
   }
 
   // Get current extraction mode and availability
@@ -23,6 +24,18 @@ export class ExtractionService {
       description: 'Built-in JavaScript extraction using Cheerio',
       features: ['Fast', 'Lightweight', 'Good for simple sites'],
       performance: 'High'
+    };
+
+    // Check Omnivore availability
+    const omnivoreInfo = await omnivoreExtractor.getInfo();
+    info.modes.omnivore = {
+      available: omnivoreInfo.available,
+      description: 'Advanced content extraction using Omnivore Readability',
+      features: ['Smart content detection', 'Readability scoring', 'Author extraction', 'Reading time'],
+      performance: 'High',
+      version: omnivoreInfo.version,
+      error: omnivoreInfo.error,
+      library: omnivoreInfo.library
     };
 
     // Check Monolith availability
@@ -155,6 +168,15 @@ export class ExtractionService {
 
       // Route to appropriate extraction method
       switch (this.extractionMode) {
+        case 'omnivore':
+          try {
+            extractionResult = await omnivoreExtractor.extractFromHtml(html, url);
+          } catch (omnivoreError) {
+            console.warn('⚠️  Omnivore extraction failed, falling back to Cheerio:', omnivoreError.message);
+            extractionResult = await this.extractWithCheerio(url, html);
+          }
+          break;
+
         case 'monolith':
           // Check if monolith is available
           const isMonolithAvailable = await monolithExtractor.isAvailable();
@@ -199,6 +221,33 @@ export class ExtractionService {
           title: extractionResult.title,
           description: extractionResult.description,
           extractionMethod: 'monolith'
+        };
+      }
+
+      // For omnivore results, generate HTML with inline images
+      if (extractionResult.extractionMethod === 'omnivore') {
+        const htmlResult = await generateHTMLWithInlineImages(
+          extractionResult.content,
+          extractionResult.url,
+          extractionResult.title,
+          extractionResult.description,
+          extractionResult.url,
+          {
+            ...metadata,
+            extractionMethod: extractionResult.extractionMethod,
+            author: extractionResult.author,
+            readingTime: extractionResult.readingTime,
+            score: extractionResult.score
+          }
+        );
+
+        return {
+          ...htmlResult,
+          title: extractionResult.title,
+          description: extractionResult.description,
+          extractionMethod: extractionResult.extractionMethod,
+          author: extractionResult.author,
+          readingTime: extractionResult.readingTime
         };
       }
 
