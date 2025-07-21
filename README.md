@@ -82,6 +82,13 @@ Web Ripper is a brutal content extraction tool that destroys ads, removes clutte
    EXTRACTION_TIMEOUT=30000
    MAX_CONTENT_LENGTH=10mb
    
+   # Extraction Mode (cheerio, omnivore, monolith)
+   EXTRACTION_MODE=omnivore
+   
+   # Omnivore Settings
+   OMNIVORE_TIMEOUT=30000
+   OMNIVORE_MIN_CONTENT_LENGTH=140
+   
    # WebDAV (Optional)
    WEBDAV_BASE_PATH=/web-ripper
    ORGANIZE_BY_DATE=true

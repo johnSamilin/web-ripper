@@ -311,6 +311,7 @@ const ExtractionModeSelector: React.FC<ExtractionModeSelectorProps> = ({
                 <tr className="border-b-4 border-black">
                   <th className="text-left p-2 font-black uppercase">Feature</th>
                   <th className="text-center p-2 font-black uppercase">Cheerio</th>
+                  <th className="text-center p-2 font-black uppercase">Omnivore</th>
                   <th className="text-center p-2 font-black uppercase">Monolith</th>
                 </tr>
               </thead>
@@ -318,25 +319,42 @@ const ExtractionModeSelector: React.FC<ExtractionModeSelectorProps> = ({
                 <tr className="border-b-2 border-gray-300">
                   <td className="p-2 font-black uppercase">Speed</td>
                   <td className="text-center p-2 text-green-600">Fast</td>
+                  <td className="text-center p-2 text-green-600">Fast</td>
                   <td className="text-center p-2 text-yellow-600">Medium</td>
                 </tr>
                 <tr className="border-b-2 border-gray-300">
                   <td className="p-2 font-black uppercase">Complex Sites</td>
                   <td className="text-center p-2 text-yellow-600">Good</td>
                   <td className="text-center p-2 text-green-600">Excellent</td>
+                  <td className="text-center p-2 text-green-600">Excellent</td>
                 </tr>
                 <tr className="border-b-2 border-gray-300">
                   <td className="p-2 font-black uppercase">Self-Contained</td>
+                  <td className="text-center p-2 text-green-600">Yes</td>
                   <td className="text-center p-2 text-green-600">Yes</td>
                   <td className="text-center p-2 text-green-600">Yes</td>
                 </tr>
                 <tr className="border-b-2 border-gray-300">
                   <td className="p-2 font-black uppercase">Dependencies</td>
                   <td className="text-center p-2 text-green-600">None</td>
+                  <td className="text-center p-2 text-green-600">JS Library</td>
                   <td className="text-center p-2 text-red-600">External Binary</td>
+                </tr>
+                <tr className="border-b-2 border-gray-300">
+                  <td className="p-2 font-black uppercase">Content Quality</td>
+                  <td className="text-center p-2 text-yellow-600">Good</td>
+                  <td className="text-center p-2 text-green-600">Excellent</td>
+                  <td className="text-center p-2 text-green-600">Excellent</td>
+                </tr>
+                <tr className="border-b-2 border-gray-300">
+                  <td className="p-2 font-black uppercase">Metadata</td>
+                  <td className="text-center p-2 text-yellow-600">Basic</td>
+                  <td className="text-center p-2 text-green-600">Rich</td>
+                  <td className="text-center p-2 text-yellow-600">Basic</td>
                 </tr>
                 <tr>
                   <td className="p-2 font-black uppercase">Resource Usage</td>
+                  <td className="text-center p-2 text-green-600">Low</td>
                   <td className="text-center p-2 text-green-600">Low</td>
                   <td className="text-center p-2 text-yellow-600">Medium</td>
                 </tr>
