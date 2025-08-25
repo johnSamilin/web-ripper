@@ -17,6 +17,7 @@ import SourceAnalysis from './components/SourceAnalysis';
 import ExtractionModeSelector from './components/ExtractionModeSelector';
 import LandingPage from './components/LandingPage';
 import OfflineIndicator from './components/OfflineIndicator';
+import ArticleSearch from './components/ArticleSearch';
 
 interface ExtractResult {
   success: boolean;
