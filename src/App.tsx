@@ -17,6 +17,7 @@ import SourceAnalysis from './components/SourceAnalysis';
 import ExtractionModeSelector from './components/ExtractionModeSelector';
 import LandingPage from './components/LandingPage';
 import OfflineIndicator from './components/OfflineIndicator';
+import ArticleSearch from './components/ArticleSearch';
 
 interface ExtractResult {
   success: boolean;
@@ -530,6 +531,38 @@ function App() {
           <div className="max-w-2xl mx-auto">
             <SourceAnalysis
               onClose={() => setShowSourceAnalysis(false)}
+              isAuthenticated={isAuthenticated}
+              hasWebDAV={user?.hasWebDAV || false}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (showArticleSearch) {
+    return (
+      <div className="min-h-screen bg-gray-100 relative overflow-hidden">
+        <BackgroundElements />
+
+        {/* Header */}
+        <Header
+          isAuthenticated={isAuthenticated}
+          user={user}
+          onShowSettings={() => setShowSettings(true)}
+          onShowAuth={() => setShowAuth(true)}
+          onLogout={handleLogout}
+          onShowPocketImport={() => setShowPocketImport(true)}
+          onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
+          onShowLanding={() => setShowLanding(true)}
+          onShowExtractionModes={() => setShowExtractionModes(true)}
+          onShowArticleSearch={() => setShowArticleSearch(true)}
+        />
+
+        <div className="container mx-auto px-4 py-8 relative z-10">
+          <div className="max-w-4xl mx-auto">
+            <ArticleSearch
+              onClose={() => setShowArticleSearch(false)}
               isAuthenticated={isAuthenticated}
               hasWebDAV={user?.hasWebDAV || false}
             />

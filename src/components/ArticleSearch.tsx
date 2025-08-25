@@ -28,6 +28,20 @@ interface ArticleSearchProps {
   hasWebDAV: boolean;
 }
 
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+const getReadingTime = (wordCount: number) => {
+  return Math.ceil(wordCount / 200); // Assume 200 WPM
+};
+
 const ArticleSearch: React.FC<ArticleSearchProps> = ({ onClose, isAuthenticated, hasWebDAV }) => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
