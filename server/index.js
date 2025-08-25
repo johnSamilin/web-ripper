@@ -22,6 +22,7 @@ import { extractionService } from './services/extractionService.js';
 import cleanupRoutes from './routes/cleanup.js';
 import sourceRoutes from './routes/sources.js';
 import extractionRoutes from './routes/extraction.js';
+import articleRoutes from './routes/articles.js';
 
 // Load environment variables
 dotenv.config();
@@ -659,6 +660,9 @@ app.use('/api', sourceRoutes);
 
 // EXTRACTION ROUTES
 app.use('/api/extraction', extractionRoutes);
+
+// ARTICLE SEARCH ROUTES
+app.use('/api/articles', articleRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ 

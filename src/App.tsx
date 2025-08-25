@@ -17,6 +17,7 @@ import SourceAnalysis from './components/SourceAnalysis';
 import ExtractionModeSelector from './components/ExtractionModeSelector';
 import LandingPage from './components/LandingPage';
 import OfflineIndicator from './components/OfflineIndicator';
+import ArticleSearch from './components/ArticleSearch';
 
 interface ExtractResult {
   success: boolean;
@@ -84,6 +85,7 @@ function App() {
   const [showPocketImport, setShowPocketImport] = useState(false);
   const [showSourceAnalysis, setShowSourceAnalysis] = useState(false);
   const [showExtractionModes, setShowExtractionModes] = useState(false);
+  const [showArticleSearch, setShowArticleSearch] = useState(false);
   
   // Auth form state
   const [authError, setAuthError] = useState('');
@@ -116,6 +118,7 @@ function App() {
       setShowPocketImport(false);
       setShowSourceAnalysis(false);
       setShowExtractionModes(false);
+      setShowArticleSearch(false);
       setShowExtractionModes(false);
       
       // You can auto-trigger extraction here if desired
@@ -221,6 +224,8 @@ function App() {
     setShowPocketImport(false);
     setShowSourceAnalysis(false);
     setShowExtractionModes(false);
+    setShowArticleSearch(false);
+    setShowArticleSearch(false);
     setShowLanding(true);
   };
 
@@ -368,6 +373,7 @@ function App() {
           onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
           onShowLanding={() => setShowLanding(true)}
           onShowExtractionModes={() => setShowExtractionModes(true)}
+          onShowArticleSearch={() => setShowArticleSearch(true)}
         />
 
         <div className="container mx-auto px-4 py-8 relative z-10">
@@ -440,6 +446,7 @@ function App() {
           onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
           onShowLanding={() => setShowLanding(true)}
           onShowExtractionModes={() => setShowExtractionModes(true)}
+          onShowArticleSearch={() => setShowArticleSearch(true)}
         />
 
         <div className="container mx-auto px-4 py-8 relative z-10">
