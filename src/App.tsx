@@ -84,6 +84,7 @@ function App() {
   const [showPocketImport, setShowPocketImport] = useState(false);
   const [showSourceAnalysis, setShowSourceAnalysis] = useState(false);
   const [showExtractionModes, setShowExtractionModes] = useState(false);
+  const [showArticleSearch, setShowArticleSearch] = useState(false);
   
   // Auth form state
   const [authError, setAuthError] = useState('');
@@ -116,6 +117,9 @@ function App() {
       setShowPocketImport(false);
       setShowSourceAnalysis(false);
       setShowExtractionModes(false);
+      setShowArticleSearch(false);
+      setShowArticleSearch(false);
+      setShowArticleSearch(false);
       setShowExtractionModes(false);
       
       // You can auto-trigger extraction here if desired

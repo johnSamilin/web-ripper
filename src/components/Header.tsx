@@ -1,5 +1,5 @@
 import React from 'react';
-import { Skull, Settings, LogOut, Cloud, UserPlus, Upload, BarChart3, Home, Zap } from 'lucide-react';
+import { Skull, Settings, LogOut, Cloud, UserPlus, Upload, BarChart3, Home, Zap, Search } from 'lucide-react';
 
 interface UserData {
   id: number;
@@ -18,6 +18,7 @@ interface HeaderProps {
   onShowSourceAnalysis: () => void;
   onShowLanding: () => void;
   onShowExtractionModes: () => void;
+  onShowArticleSearch: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -29,7 +30,8 @@ const Header: React.FC<HeaderProps> = ({
   onShowPocketImport,
   onShowSourceAnalysis,
   onShowLanding,
-  onShowExtractionModes
+  onShowExtractionModes,
+  onShowArticleSearch
 }) => {
   return (
     <div className="bg-white border-b-4 border-black relative z-10">
@@ -76,6 +78,13 @@ const Header: React.FC<HeaderProps> = ({
                   title="Extraction Modes"
                 >
                   <Zap className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={onShowArticleSearch}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-black py-2 px-3 border-4 border-black transition-all duration-200"
+                  title="Search Articles"
+                >
+                  <Search className="w-5 h-5" />
                 </button>
                 <button
                   onClick={onShowSourceAnalysis}
