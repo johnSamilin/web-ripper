@@ -552,6 +552,7 @@ function App() {
         onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
         onShowLanding={() => setShowLanding(true)}
         onShowExtractionModes={() => setShowExtractionModes(true)}
+        onShowArticleSearch={() => setShowArticleSearch(true)}
       />
 
       <div className="container mx-auto px-4 py-8 relative z-10">
