@@ -17,7 +17,6 @@ import SourceAnalysis from './components/SourceAnalysis';
 import ExtractionModeSelector from './components/ExtractionModeSelector';
 import LandingPage from './components/LandingPage';
 import OfflineIndicator from './components/OfflineIndicator';
-import ArticleSearch from './components/ArticleSearch';
 
 interface ExtractResult {
   success: boolean;
@@ -373,6 +372,7 @@ function App() {
           onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
           onShowLanding={() => setShowLanding(true)}
           onShowExtractionModes={() => setShowExtractionModes(true)}
+          onShowArticleSearch={() => setShowArticleSearch(true)}
         />
 
         <div className="container mx-auto px-4 py-8 relative z-10">
@@ -445,6 +445,7 @@ function App() {
           onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
           onShowLanding={() => setShowLanding(true)}
           onShowExtractionModes={() => setShowExtractionModes(true)}
+          onShowArticleSearch={() => setShowArticleSearch(true)}
         />
 
         <div className="container mx-auto px-4 py-8 relative z-10">
@@ -490,6 +491,7 @@ function App() {
           onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
           onShowLanding={() => setShowLanding(true)}
           onShowExtractionModes={() => setShowExtractionModes(true)}
+          onShowArticleSearch={() => setShowArticleSearch(true)}
         />
 
         <div className="container mx-auto px-4 py-8 relative z-10">
@@ -521,6 +523,7 @@ function App() {
           onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
           onShowLanding={() => setShowLanding(true)}
           onShowExtractionModes={() => setShowExtractionModes(true)}
+          onShowArticleSearch={() => setShowArticleSearch(true)}
         />
 
         <div className="container mx-auto px-4 py-8 relative z-10">
@@ -550,6 +553,7 @@ function App() {
         onShowSourceAnalysis={() => setShowSourceAnalysis(true)}
         onShowLanding={() => setShowLanding(true)}
         onShowExtractionModes={() => setShowExtractionModes(true)}
+        onShowArticleSearch={() => setShowArticleSearch(true)}
       />
 
       <div className="container mx-auto px-4 py-8 relative z-10">
